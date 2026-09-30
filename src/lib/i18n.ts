@@ -104,6 +104,61 @@ export function buildLocalizedPath(basePath: string, lang: LanguageCode): string
   return `/${lang}${cleanBase}`;
 }
 
+export interface NavItemConfig {
+  id: string;
+  namespace: string;
+  label: string;
+  href: string;
+  iconName: 'Home' | 'Sparkles' | 'Cpu' | 'Film' | 'BookOpen' | 'Zap';
+}
+
+/**
+ * Architecture v2 dynamic navigation builder based on active locale
+ */
+export function getNavigation(locale: LanguageCode = 'ar'): NavItemConfig[] {
+  const isAr = locale === 'ar';
+  const prefix = isAr ? '' : `/${locale}`;
+
+  return [
+    {
+      id: 'home',
+      namespace: 'pages',
+      label: isAr ? 'الرئيسية' : locale === 'fr' ? 'Accueil' : locale === 'es' ? 'Inicio' : locale === 'id' ? 'Beranda' : 'Home',
+      href: isAr ? '/' : `/${locale}`,
+      iconName: 'Home',
+    },
+    {
+      id: 'prompts',
+      namespace: 'prompts',
+      label: isAr ? 'أوامر الصور' : locale === 'fr' ? 'Prompts Images' : locale === 'es' ? 'Prompts de Imágenes' : locale === 'id' ? 'Prompt Gambar' : 'Image Prompts',
+      href: `${prefix}/prompts`,
+      iconName: 'Sparkles',
+    },
+    {
+      id: 'skills',
+      namespace: 'skills',
+      label: isAr ? 'مهارات المبدعين' : locale === 'fr' ? 'Compétences Créateurs' : locale === 'es' ? 'Habilidades IA' : locale === 'id' ? 'Keahlian Kreator' : 'Creator Skills',
+      href: `${prefix}/skills`,
+      iconName: 'Cpu',
+    },
+    {
+      id: 'videos',
+      namespace: 'videos',
+      label: isAr ? 'فيديوهات بدون وجه' : locale === 'fr' ? 'Vidéos Sans Visage' : locale === 'es' ? 'Videos Sin Rostro' : locale === 'id' ? 'Video Tanpa Wajah' : 'Faceless Videos',
+      href: `${prefix}/videos`,
+      iconName: 'Film',
+    },
+    {
+      id: 'blog',
+      namespace: 'blog',
+      label: isAr ? 'مدونة الذكاء الاصطناعي' : locale === 'fr' ? 'Blog IA' : locale === 'es' ? 'Blog de IA' : locale === 'id' ? 'Blog AI' : 'AI Blog',
+      href: `${prefix}/blog`,
+      iconName: 'BookOpen',
+    },
+  ];
+}
+
+
 // Hreflang generator that syncs page tags and XML sitemaps
 export function generateHreflangs(
   basePath: string,

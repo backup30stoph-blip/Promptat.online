@@ -653,15 +653,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       return;
     }
 
-    if (parts[0] === 'stayka-login') {
-      window.history.replaceState(null, '', '/login');
-      setActiveTab('login');
+    if (parts[0] === 'adminato-login') {
+      setActiveTab('adminato-login');
       setActiveDetail(null);
-      showNotification('Redirecting to secure login...', 'info');
       return;
     }
 
-    if (parts[0] === 'login') {
+    if (parts[0] === 'login' || parts[0] === 'stayka-login') {
       setActiveTab('login');
       setActiveDetail(null);
       return;

@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 Disallow: /admin/
 Disallow: /account/
+Disallow: /auth/
 Disallow: /search
-Disallow: /login
 
-Sitemap: https://gemiprompts.store/sitemap.xml
+Sitemap: https://promptat.online/sitemap.xml

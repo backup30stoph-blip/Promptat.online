@@ -282,3 +282,85 @@ export interface AdSlot {
   created_at?: string;
   updated_at?: string;
 }
+
+// ----------------------------------------------------
+// ARCHITECTURE V2: CONTENT & LOCALIZATION DATA MODEL
+// ----------------------------------------------------
+
+export type ContentStatus = 'draft' | 'published' | 'archived';
+export type RouteNamespace = 'tools' | 'blog' | 'prompts' | 'skills' | 'videos' | 'categories' | 'pages';
+
+export interface LanguageEntity {
+  code: string; // e.g. 'en', 'ar', 'fr', 'es', 'id'
+  name: string; // 'English'
+  native_name: string; // 'العربية'
+  dir: 'ltr' | 'rtl';
+  is_default: boolean;
+  enabled: boolean;
+  sort_order: number;
+  flag_emoji?: string;
+}
+
+export interface ContentPage {
+  id: string;
+  content_key: string; // e.g. 'seo_title_generator', 'chatgpt-image-prompts', 'ai-news-article'
+  content_type: 'tool' | 'prompt' | 'skill' | 'video' | 'blog' | 'page' | 'category';
+  status: ContentStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PageTranslation {
+  id: string;
+  page_id: string;
+  language_code: string;
+  route_namespace: RouteNamespace;
+  slug: string;
+  title: string;
+  h1?: string;
+  description?: string;
+  content?: Record<string, any>;
+  published: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PageSeo {
+  id: string;
+  page_translation_id: string;
+  canonical_url: string;
+  robots: string;
+  og_title?: string;
+  og_description?: string;
+  og_image?: string;
+  twitter_title?: string;
+  twitter_description?: string;
+  twitter_image?: string;
+  schema_type?: string;
+  json_ld?: Record<string, any>;
+  focus_keyword?: string;
+  secondary_keywords?: string[];
+  created_at: string;
+  updated_at: string;
+}
+
+export interface RouteTranslation {
+  id: string;
+  route_key: string; // 'prompts', 'skills', 'videos', 'blog', 'tools'
+  route_namespace: RouteNamespace;
+  language_code: string;
+  path_segment: string; // e.g. 'prompts', 'skills', 'blog', 'tools' (fixed Latin segment as per v2)
+  label: string; // e.g. 'أوامر الصور', 'Image Prompts', 'Prompts d\'images'
+  icon?: string;
+  is_nav: boolean;
+  sort_order: number;
+}
+
+export interface DynamicNavItem {
+  key: string;
+  label: string;
+  href: string;
+  icon?: string;
+  isActive?: boolean;
+}
+

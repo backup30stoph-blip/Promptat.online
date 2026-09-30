@@ -1,11 +1,22 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Sparkles, Search, Layout, Cpu, BookOpen, Menu, X, PlusCircle, Bookmark, Heart, Home as HomeIcon, Zap, UploadCloud, User, Film, Flame, Shield, LogOut } from 'lucide-react';
+import { Sparkles, Search, Cpu, BookOpen, Menu, Bookmark, Home as HomeIcon, Zap, Film, Flame } from 'lucide-react';
 import { UserProfileModal } from '../UserProfileModal';
 import { AuthModal } from '../AuthModal';
 import { NotificationsDropdown } from './NotificationsDropdown';
-import { LanguageSwitcher } from './LanguageSwitcher';
-import { LanguageCode } from '../../lib/i18n';
+import { LanguageSelector } from './LanguageSelector';
+import { UserMenu } from './UserMenu';
+import { MobileDrawer } from './MobileDrawer';
+import { getNavigation } from '../../lib/i18n';
+
+const ICON_MAP = {
+  Home: HomeIcon,
+  Sparkles: Sparkles,
+  Cpu: Cpu,
+  Film: Film,
+  BookOpen: BookOpen,
+  Zap: Zap,
+};
 
 export const Navbar: React.FC = () => {
   const { 
@@ -15,8 +26,6 @@ export const Navbar: React.FC = () => {
     setSearchQuery,
     state,
     user,
-    isAdmin,
-    logout,
     currentLang,
     switchLanguage,
     t
@@ -26,17 +35,14 @@ export const Navbar: React.FC = () => {
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
-  const navItems = [
-    { id: 'home', label: t('navHome', 'Home'), icon: HomeIcon },
-    { id: 'prompts', label: t('navPrompts', 'AI Prompts'), icon: Sparkles },
-    { id: 'skills', label: t('navSkills', 'Skills Library'), icon: Cpu },
-    { id: 'videos', label: t('navVideos', 'Video Blueprints'), icon: Film },
-    { id: 'blog', label: t('navBlog', 'Blogs & Guides'), icon: BookOpen },
-  ];
+  const dynamicNavItems = getNavigation(currentLang);
+
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    navigateTo('search');
+    if (searchQuery.trim()) {
+      navigateTo('search');
+    }
   };
 
   const bookmarkCount = 
@@ -45,134 +51,112 @@ export const Navbar: React.FC = () => {
     state.bookmarks.videos.length;
 
   return (
-    <nav className="sticky top-0 z-50 w-full flex flex-col shadow-sm">
+    <nav className="sticky top-0 z-50 w-full flex flex-col shadow-sm select-none">
       {/* Primary Top Bar: Vibrant Brand Red */}
       <div className="w-full bg-[#e21833] text-white">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-15 items-center justify-between gap-4">
+        <div className="mx-auto max-w-7xl px-3 sm:px-6 lg:px-8">
+          <div className="flex h-16 items-center justify-between gap-2.5 sm:gap-3">
             
-            {/* Logo */}
+            {/* Toggle Hamburger Button (Visible on ALL viewports below 1024px) */}
+            <button
+              type="button"
+              onClick={() => setMobileMenuOpen(true)}
+              className="lg:hidden rounded-xl p-2 text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+              aria-label={t('nav.openMenu', 'فتح القائمة')}
+              aria-expanded={mobileMenuOpen}
+              aria-controls="mobile-drawer"
+            >
+              <Menu className="h-5 w-5" />
+            </button>
+
+            {/* 1. Brand Logo */}
             <div 
               onClick={() => navigateTo('home')} 
-              className="flex cursor-pointer items-center space-x-2 shrink-0 select-none rtl:space-x-reverse"
+              className="flex cursor-pointer items-center gap-1.5 shrink-0"
               id="nav-logo"
             >
-              <span className="font-sans text-xl font-black tracking-tight text-white uppercase">
+              <span className="font-sans text-lg sm:text-xl font-black tracking-tight text-white uppercase">
                 Promptat<span className="text-red-200">.online</span>
               </span>
             </div>
 
-            {/* Desktop Center Search Bar (Matches Mockup) */}
+            {/* 2. Desktop/Tablet Search Input (flex-1 min-w-0 max-w-xl) */}
             <form 
               onSubmit={handleSearchSubmit} 
-              className="relative hidden max-w-sm flex-1 sm:block md:max-w-md"
+              className="relative hidden sm:block flex-1 min-w-0 max-w-xl"
             >
-              <div className="relative">
+              <div className="relative w-full">
                 <input
-                   type="text"
-                   value={searchQuery}
-                   onChange={(e) => setSearchQuery(e.target.value)}
-                   placeholder={t('searchPromptSkillGuide', 'Find a prompt, skill, guide...')}
-                   className="w-full rounded-md border-0 bg-white py-1.5 pl-3 pr-10 rtl:pr-3 rtl:pl-10 text-xs font-medium text-slate-800 placeholder-slate-400 outline-none focus:ring-2 focus:ring-red-300"
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t('searchPromptSkillGuide', 'Find a prompt, skill, guide...')}
+                  className="w-full rounded-xl border-0 bg-white py-2 pl-3 pr-10 rtl:pr-3 rtl:pl-10 text-xs font-semibold text-slate-800 placeholder-slate-400 outline-none focus:ring-2 focus:ring-red-300 shadow-inner"
                 />
-                <button type="submit" className="absolute inset-y-0 right-0 rtl:right-auto rtl:left-0 flex items-center pr-3 rtl:pl-3 text-slate-400 hover:text-slate-600">
+                <button type="submit" className="absolute inset-y-0 right-0 rtl:right-auto rtl:left-0 flex items-center pr-3 rtl:pl-3 text-slate-400 hover:text-slate-600 cursor-pointer">
                   <Search className="h-4 w-4" />
                 </button>
               </div>
             </form>
 
-              {/* Top Right Quick Navigation Buttons */}
-              <div className="hidden items-center space-x-4 rtl:space-x-reverse md:flex text-xs font-semibold">
-                <button 
-                  onClick={() => navigateTo('prompts')}
-                  className="flex items-center space-x-1.5 rtl:space-x-reverse text-white/90 hover:text-white transition-colors cursor-pointer"
-                >
-                  <Zap className="h-4 w-4 shrink-0" />
-                  <span>{t('navLatest', 'Latest')}</span>
-                </button>
-                <button 
-                  onClick={() => navigateTo('skills')}
-                  className="flex items-center space-x-1.5 rtl:space-x-reverse text-white/90 hover:text-white transition-colors cursor-pointer"
-                >
-                  <Flame className="h-4 w-4 shrink-0" />
-                  <span>{t('navPopular', 'Popular')}</span>
-                </button>
+            {/* 3. Action Controls Cluster */}
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0 ms-auto">
 
-                <button
-                  onClick={() => setProfileModalOpen(true)}
-                  className="flex items-center space-x-1.5 rtl:space-x-reverse rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold px-3 py-1.5 transition-colors cursor-pointer border border-white/20"
-                  title="View Saved Bookmarks & Personal Collection"
-                >
-                  <Bookmark className="h-4 w-4 text-red-200 shrink-0" />
-                  <span>{t('navSavedCollection', 'Saved Collection')}</span>
-                  {bookmarkCount > 0 && (
-                    <span className="ml-1 rtl:mr-1 rounded-full bg-white text-[#e21833] text-[10px] font-black px-1.5 py-0.2">
-                      {bookmarkCount}
-                    </span>
-                  )}
-                </button>
+              {/* Compact Language Selector (Globe + Flag + Code) */}
+              <div className="hidden sm:inline-block">
+                <LanguageSelector currentLang={currentLang} onLanguageChange={switchLanguage} variant="navbar" />
+              </div>
 
-                <LanguageSwitcher currentLang={currentLang} onLanguageChange={switchLanguage} variant="navbar" />
-
-                <NotificationsDropdown />
-
-                <button 
-                  onClick={() => navigateTo('admin')}
-                  className="rounded-md bg-white text-[#e21833] font-black px-3 py-1.5 transition-colors hover:bg-slate-50 cursor-pointer shadow-md flex items-center space-x-1.5 rtl:space-x-reverse"
-                >
-                  <Shield className="h-4 w-4" />
-                  <span>{t('navAdminPanel', 'Admin Panel')}</span>
-                </button>
-
-                {user && (
-                  <button 
-                    onClick={logout}
-                    className="flex items-center space-x-1.5 rtl:space-x-reverse text-white/90 hover:text-white transition-colors cursor-pointer font-bold"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span>{t('navSignOut', 'Sign Out')}</span>
-                  </button>
+              {/* Saved Collection Icon Button */}
+              <button
+                type="button"
+                onClick={() => setProfileModalOpen(true)}
+                className="relative flex items-center justify-center h-9 w-9 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer border border-white/20 shrink-0"
+                title={t('navSavedCollection', 'المجموعة المحفوظة')}
+                aria-label={t('navSavedCollection', 'المجموعة المحفوظة')}
+              >
+                <Bookmark className="h-4 w-4 text-red-200" />
+                {bookmarkCount > 0 && (
+                  <span className="absolute -top-1 -right-1 rtl:-left-1 rtl:right-auto flex h-4 min-w-4 items-center justify-center rounded-full bg-white text-[#e21833] text-[9px] font-black px-1 shadow-sm">
+                    {bookmarkCount}
+                  </span>
                 )}
-              </div>
+              </button>
 
-              {/* Mobile Actions Menu Trigger */}
-              <div className="flex items-center space-x-2 rtl:space-x-reverse md:hidden">
-                <NotificationsDropdown />
-                <button
-                  onClick={() => navigateTo('admin')}
-                  className="rounded-lg bg-white/20 px-2.5 py-1 text-xs font-black text-white hover:bg-white/30"
-                >
-                  {t('adminConsole', 'Admin')}
-                </button>
-                <button
-                  onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                  className="rounded-lg p-1.5 text-white hover:bg-white/10"
-                >
-                  {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                </button>
-              </div>
+              {/* Bell Notifications (Logged in users only) */}
+              {user && <NotificationsDropdown />}
+
+              {/* User Profile Avatar / Sign In Menu */}
+              <UserMenu 
+                onOpenAuth={() => setAuthModalOpen(true)} 
+                onOpenBookmarks={() => setProfileModalOpen(true)} 
+              />
+
+            </div>
 
           </div>
         </div>
       </div>
 
-      {/* Secondary Bar: Clean White Menu with Red Accents (Desktop Centered, Hidden on Mobile/Tablet) */}
-      <div className="w-full bg-white border-b border-slate-200 py-2.5 hidden lg:block">
+      {/* Secondary Bar: Desktop Row 2 Categories (Hidden below 1024px) */}
+      <div className="w-full bg-white border-b border-slate-200 py-1.5 shadow-2xs hidden lg:block">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-center">
-            {/* Nav Items Row */}
-            <div className="flex items-center gap-x-8">
-              {navItems.map((item) => {
+          <div className="flex items-center justify-between gap-4 overflow-x-auto whitespace-nowrap scrollbar-none py-1">
+            
+            {/* Category Links */}
+            <div className="flex items-center gap-2">
+              {dynamicNavItems.map((item) => {
                 const isActive = activeTab === item.id;
-                const Icon = item.icon;
+                const Icon = ICON_MAP[item.iconName] || HomeIcon;
                 return (
                   <button
                     key={item.id}
+                    type="button"
                     onClick={() => navigateTo(item.id)}
-                    className={`flex items-center space-x-2 rtl:space-x-reverse text-xs font-bold tracking-tight uppercase transition-all py-1 cursor-pointer ${
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       isActive 
-                        ? 'text-[#e21833]' 
-                        : 'text-slate-600 hover:text-slate-900'
+                        ? 'bg-red-50 text-[#e21833]' 
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
                     }`}
                   >
                     <Icon className={`h-4 w-4 ${isActive ? 'text-[#e21833]' : 'text-slate-400'}`} />
@@ -181,91 +165,38 @@ export const Navbar: React.FC = () => {
                 );
               })}
             </div>
+
+            {/* Quick Filters */}
+            <div className="flex items-center gap-2 border-l rtl:border-r rtl:border-l-0 border-slate-200 pl-3 rtl:pr-3 shrink-0">
+              <button 
+                type="button"
+                onClick={() => navigateTo('prompts')}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer"
+              >
+                <Zap className="h-3.5 w-3.5 text-amber-500" />
+                <span>{t('navLatest', 'الأحدث')}</span>
+              </button>
+              <button 
+                type="button"
+                onClick={() => navigateTo('skills')}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer"
+              >
+                <Flame className="h-3.5 w-3.5 text-rose-500" />
+                <span>{t('navPopular', 'الأكثر شعبية')}</span>
+              </button>
+            </div>
+
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu Drawer (Displayed on Mobile / Tablet toggle) */}
-      {mobileMenuOpen && (
-        <div className="border-t border-slate-200 bg-white p-4 lg:hidden">
-          {/* Mobile Search */}
-          <form onSubmit={handleSearchSubmit} className="relative mb-4">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t('searchPlaceholder', 'Search prompts, skills...')}
-              className="w-full rounded-md border border-slate-200 bg-slate-50 py-2 pl-3 pr-9 rtl:pr-3 rtl:pl-9 text-xs text-slate-800 outline-none"
-            />
-            <button type="submit" className="absolute inset-y-0 right-0 rtl:right-auto rtl:left-0 flex items-center pr-3 rtl:pl-3 text-slate-400">
-              <Search className="h-4 w-4 text-slate-400" />
-            </button>
-          </form>
-
-          {/* Mobile Nav Links */}
-          <div className="space-y-1.5">
-            {navItems.map((item) => {
-              const isActive = activeTab === item.id;
-              const Icon = item.icon;
-              return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    navigateTo(item.id);
-                    setMobileMenuOpen(false);
-                  }}
-                  className={`flex w-full items-center space-x-3 rtl:space-x-reverse py-2.5 px-3 rounded-md text-xs font-bold uppercase ${
-                    isActive 
-                      ? 'bg-red-50 text-[#e21833]' 
-                      : 'text-slate-600 hover:bg-slate-50'
-                  }`}
-                >
-                  <Icon className={`h-5 w-5 ${isActive ? 'text-[#e21833]' : 'text-slate-400'}`} />
-                  <span>{item.label}</span>
-                </button>
-              );
-            })}
-
-            <div className="pt-2">
-              <div className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1 px-3">
-                {t('selectLanguage', 'Select Language')}
-              </div>
-              <div className="px-3">
-                <LanguageSwitcher currentLang={currentLang} onLanguageChange={switchLanguage} variant="footer" className="w-full" />
-              </div>
-            </div>
-
-            <button
-              onClick={() => {
-                setProfileModalOpen(true);
-                setMobileMenuOpen(false);
-              }}
-              className="flex w-full items-center justify-between py-2.5 px-3 rounded-md text-xs font-bold uppercase bg-slate-100 text-slate-800 mt-2 cursor-pointer"
-            >
-              <div className="flex items-center space-x-3 rtl:space-x-reverse">
-                <Bookmark className="h-5 w-5 text-[#e21833]" />
-                <span>{t('navSavedCollection', 'Saved Collection')}</span>
-              </div>
-              {bookmarkCount > 0 && (
-                <span className="rounded-full bg-[#e21833] text-white text-[10px] font-black px-2 py-0.5">
-                  {bookmarkCount}
-                </span>
-              )}
-            </button>
-
-            <button
-              onClick={() => {
-                navigateTo('admin');
-                setMobileMenuOpen(false);
-              }}
-              className="flex w-full items-center py-2.5 px-3 rounded-md text-xs font-bold uppercase bg-red-600 text-white mt-2 cursor-pointer space-x-3 rtl:space-x-reverse"
-            >
-              <Shield className="h-5 w-5 text-white" />
-              <span>{t('navAdminPanel', 'Admin Panel')}</span>
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Responsive Mobile Drawer (<1024px) */}
+      <MobileDrawer
+        open={mobileMenuOpen}
+        onClose={() => setMobileMenuOpen(false)}
+        onOpenAuth={() => setAuthModalOpen(true)}
+        onOpenBookmarks={() => setProfileModalOpen(true)}
+      />
 
       {/* Profile & Bookmarks Modal */}
       <UserProfileModal

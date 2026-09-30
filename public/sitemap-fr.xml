@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  
+  <!-- Homepage French -->
+  <url>
+    <loc>https://promptat.online/fr</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://promptat.online/" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://promptat.online/en" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://promptat.online/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://promptat.online/es" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://promptat.online/id" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://promptat.online/" />
+  </url>
+
+  <!-- Prompts Hub French -->
+  <url>
+    <loc>https://promptat.online/fr/prompts</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://promptat.online/prompts" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://promptat.online/en/prompts" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://promptat.online/fr/prompts" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://promptat.online/es/prompts" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://promptat.online/id/prompts" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://promptat.online/prompts" />
+  </url>
+
+  <!-- Skills Hub French -->
+  <url>
+    <loc>https://promptat.online/fr/skills</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://promptat.online/skills" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://promptat.online/en/skills" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://promptat.online/fr/skills" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://promptat.online/es/skills" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://promptat.online/id/skills" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://promptat.online/skills" />
+  </url>
+
+  <!-- Videos Hub French -->
+  <url>
+    <loc>https://promptat.online/fr/videos</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://promptat.online/videos" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://promptat.online/en/videos" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://promptat.online/fr/videos" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://promptat.online/es/videos" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://promptat.online/id/videos" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://promptat.online/videos" />
+  </url>
+
+  <!-- Blog Hub French -->
+  <url>
+    <loc>https://promptat.online/fr/blog</loc>
+    <lastmod>2026-09-30</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://promptat.online/blog" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://promptat.online/en/blog" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://promptat.online/fr/blog" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://promptat.online/es/blog" />
+    <xhtml:link rel="alternate" hreflang="id" href="https://promptat.online/id/blog" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://promptat.online/blog" />
+  </url>
+
+</urlset>

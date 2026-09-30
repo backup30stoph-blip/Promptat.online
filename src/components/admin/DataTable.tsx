@@ -90,16 +90,16 @@ export function DataTable<T extends { id: string | number }>({
       {/* Main Table Container */}
       <div className="overflow-hidden rounded-xl border border-slate-100 bg-slate-50/50 shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full min-w-full table-fixed divide-y divide-slate-100 text-left">
+          <table className="w-full min-w-full divide-y divide-slate-100 text-start rtl:text-right ltr:text-left">
             <thead className="bg-slate-50 text-[10px] font-bold uppercase tracking-wider text-slate-500">
               <tr>
                 {columns.map(col => (
-                  <th key={col.key} scope="col" className={`px-6 py-3.5 ${col.className || ''}`}>
+                  <th key={col.key} scope="col" className={`px-4 py-3.5 ${col.className || ''}`}>
                     {col.label}
                   </th>
                 ))}
                 {(onEdit || onDelete || onView) && (
-                  <th scope="col" className="w-32 px-6 py-3.5 text-right">
+                  <th scope="col" className="w-28 px-4 py-3.5 text-end rtl:text-left ltr:text-right">
                     Actions
                   </th>
                 )}
@@ -108,7 +108,7 @@ export function DataTable<T extends { id: string | number }>({
             <tbody className="divide-y divide-slate-100 bg-white text-xs font-medium text-slate-700">
               {isLoading ? (
                 <tr>
-                  <td colSpan={columns.length + (onEdit || onDelete || onView ? 1 : 0)} className="px-6 py-12 text-center">
+                  <td colSpan={columns.length + (onEdit || onDelete || onView ? 1 : 0)} className="px-4 py-12 text-center">
                     <div className="flex flex-col items-center justify-center space-y-3">
                       <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-950 border-t-transparent" />
                       <p className="text-[10px] font-bold uppercase tracking-wider text-slate-400">Loading catalog assets...</p>
@@ -117,7 +117,7 @@ export function DataTable<T extends { id: string | number }>({
                 </tr>
               ) : paginatedData.length === 0 ? (
                 <tr>
-                  <td colSpan={columns.length + (onEdit || onDelete || onView ? 1 : 0)} className="px-6 py-12 text-center">
+                  <td colSpan={columns.length + (onEdit || onDelete || onView ? 1 : 0)} className="px-4 py-12 text-center">
                     <p className="text-sm font-semibold text-slate-400">No matching assets found.</p>
                     <p className="text-[10px] uppercase tracking-wider text-slate-300 mt-1">Try resetting your search filters.</p>
                   </td>
@@ -128,14 +128,14 @@ export function DataTable<T extends { id: string | number }>({
                     {columns.map(col => {
                       const value = (item as any)[col.key];
                       return (
-                        <td key={col.key} className={`px-6 py-4 truncate ${col.className || ''}`}>
-                          {col.render ? col.render(value, item) : String(value ?? '')}
+                        <td key={col.key} className={`px-4 py-3.5 max-w-[200px] truncate ${col.className || ''}`}>
+                          {col.render ? col.render(value, item) : <span dir="auto" className="truncate block">{String(value ?? '')}</span>}
                         </td>
                       );
                     })}
                     {(onEdit || onDelete || onView) && (
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
+                      <td className="px-4 py-3.5 text-end rtl:text-left ltr:text-right">
+                        <div className="flex items-center justify-end rtl:justify-start gap-1">
                           {onView && (
                             <button
                               onClick={() => onView(item)}

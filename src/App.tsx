@@ -16,6 +16,7 @@ import { PageNotFound } from './pages/PageNotFound';
 import { AuthCallback } from './pages/AuthCallback';
 import { AccountSettings } from './pages/AccountSettings';
 import { PublicProfile } from './pages/PublicProfile';
+import { AdminatoLogin } from './pages/AdminatoLogin';
 import { ProtectedRoute } from './components/layout/ProtectedRoute';
 import { Bell, CheckCircle2, AlertTriangle, Info } from 'lucide-react';
 import { useKeyboardShortcuts } from './hooks/useKeyboardShortcuts';
@@ -77,7 +78,9 @@ const AppContent: React.FC = () => {
       case 'search':
         return <Search />;
       case 'login':
-        return <Login />;
+        return <PageNotFound type="general" />;
+      case 'adminato-login':
+        return <AdminatoLogin />;
       case 'auth-callback':
         return <AuthCallback />;
       case 'account-settings':
@@ -126,11 +129,6 @@ const AppContent: React.FC = () => {
       {/* Top sticky navbar */}
       {activeTab !== 'admin' && (
         <>
-          <TranslationAvailableBanner
-            currentLang={currentLang}
-            suggestedLang={currentLang === 'es' ? 'en' : 'es'}
-            onSwitchLanguage={switchLanguage}
-          />
           <Navbar />
         </>
       )}
