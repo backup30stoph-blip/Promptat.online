@@ -30,6 +30,8 @@ export interface AIPrompt {
   premium: boolean;
   seed?: string;
   created_at: string;
+  translation_group_id?: string;
+  lang?: string;
 }
 
 export interface AISkill {
@@ -53,6 +55,8 @@ export interface AISkill {
   supported_ai: string[]; // e.g., ['Claude', 'Gemini', 'Cursor', 'AntiGravity']
   installation: string;
   how_to_use: string;
+  translation_group_id?: string;
+  lang?: string;
 }
 
 export interface VideoConcept {
@@ -94,6 +98,8 @@ export interface VideoConcept {
   views: number;
   likes: number;
   featured: boolean;
+  translation_group_id?: string;
+  lang?: string;
 }
 
 export interface BlogArticle {
@@ -116,6 +122,8 @@ export interface BlogArticle {
   read_time: string; // e.g., "5 min read"
   related_prompts?: string[]; // Prompt IDs
   related_skills?: string[]; // Skill IDs
+  translation_group_id?: string;
+  lang?: string;
 }
 
 export interface UserCollection {
