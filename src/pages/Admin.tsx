@@ -24,6 +24,8 @@ import {
   blogValidationSchema, 
   categoryValidationSchema 
 } from '../lib/validation';
+import { MarkdownRenderer } from '../components/MarkdownRenderer';
+import { stripMarkdown } from '../utils/textUtils';
 
 export const Admin: React.FC = () => {
   const { 
@@ -133,6 +135,7 @@ export const Admin: React.FC = () => {
   const [blogCategory, setBlogCategory] = useState('AI Workflows');
   const [blogSeoTitle, setBlogSeoTitle] = useState('');
   const [blogSeoDesc, setBlogSeoDesc] = useState('');
+  const [blogEditorTab, setBlogEditorTab] = useState<'write' | 'preview'>('write');
 
   // Focus Keyword and Redirect states
   const [promptFocusKeyword, setPromptFocusKeyword] = useState('');
@@ -2153,8 +2156,49 @@ export const Admin: React.FC = () => {
                       )}
                     </div>
                     <div className="md:col-span-2">
-                      <label className="text-xs font-bold text-slate-700 uppercase">Blog Content (Markdown) *</label>
-                      <textarea required rows={6} value={blogContent} onChange={(e) => setBlogContent(e.target.value)} className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs font-mono" placeholder="# Core Title..." />
+                      <div className="flex items-center justify-between mb-1">
+                        <label className="text-xs font-bold text-slate-700 uppercase">Blog Content (Markdown) *</label>
+                        <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-lg text-[11px] font-bold">
+                          <button
+                            type="button"
+                            onClick={() => setBlogEditorTab('write')}
+                            className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${
+                              blogEditorTab === 'write' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
+                            }`}
+                          >
+                            Write
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setBlogEditorTab('preview')}
+                            className={`px-2.5 py-0.5 rounded-md transition-all cursor-pointer ${
+                              blogEditorTab === 'preview' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-900'
+                            }`}
+                          >
+                            Live Preview
+                          </button>
+                        </div>
+                      </div>
+
+                      {blogEditorTab === 'write' ? (
+                        <textarea 
+                          required 
+                          rows={8} 
+                          value={blogContent} 
+                          onChange={(e) => setBlogContent(e.target.value)} 
+                          className="mt-1 w-full rounded-lg border border-slate-200 px-3 py-2 text-xs font-mono" 
+                          placeholder="# Core Title..." 
+                        />
+                      ) : (
+                        <div className="mt-1 min-h-[160px] max-h-[350px] overflow-y-auto rounded-lg border border-slate-200 bg-slate-50/50 p-4 text-xs">
+                          {blogContent ? (
+                            <MarkdownRenderer content={blogContent} defaultDir="auto" />
+                          ) : (
+                            <p className="text-slate-400 italic">Type markdown in the Write tab to see formatted live preview.</p>
+                          )}
+                        </div>
+                      )}
+
                       {validationErrors['content'] && (
                         <p className="mt-1 text-[10px] font-bold text-red-600 uppercase tracking-wide">{validationErrors['content']}</p>
                       )}

@@ -20,6 +20,8 @@ import {
 import { useSeoMetadata } from '../hooks/useSeoMetadata';
 import { AdSlot } from '../components/AdSlot';
 import { getLocalizedItem, getLocalizedCategoryTitle } from '../lib/i18n';
+import { MarkdownRenderer } from '../components/MarkdownRenderer';
+import { stripMarkdown } from '../utils/textUtils';
 
 export const Blog: React.FC = () => {
   const { 
@@ -144,7 +146,7 @@ export const Blog: React.FC = () => {
               </span>
               
               <h1 className="font-display text-2xl sm:text-4xl font-black text-slate-900 leading-tight">
-                {article.title}
+                {stripMarkdown(article.title)}
               </h1>
 
               <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
@@ -170,57 +172,9 @@ export const Blog: React.FC = () => {
               />
             </div>
 
-            {/* Article Content - rendered with elegant typographic layout */}
-            <div className="prose max-w-none text-slate-700 space-y-6 text-sm leading-relaxed md:text-base">
-              
-              {/* Splitting content lines to display with rich JSX tags */}
-              {article.content.split('\n\n').map((para, i, arr) => {
-                if (para.startsWith('##')) {
-                  return (
-                    <h2 key={i} className="font-display text-xl sm:text-2xl font-bold text-slate-900 pt-4">
-                      {para.replace('##', '').trim()}
-                    </h2>
-                  );
-                }
-                if (para.startsWith('* **')) {
-                  // Bullet points
-                  return (
-                    <ul key={i} className="list-disc pl-5 space-y-2 text-sm sm:text-base">
-                      {para.split('\n').map((bullet, idx) => (
-                        <li key={idx} className="text-slate-600">
-                          {bullet.replace('*', '').trim()}
-                        </li>
-                      ))}
-                    </ul>
-                  );
-                }
-                if (para.startsWith('1.') || para.startsWith('2.') || para.startsWith('3.')) {
-                  // Number lists
-                  return (
-                    <div key={i} className="space-y-2 text-sm sm:text-base">
-                      {para.split('\n').map((num, idx) => (
-                        <p key={idx} className="text-slate-600">
-                          {num.trim()}
-                        </p>
-                      ))}
-                    </div>
-                  );
-                }
-                const isMiddle = i === Math.floor(arr.length * 0.4);
-                return (
-                  <React.Fragment key={i}>
-                    {isMiddle && (
-                      <div className="my-6">
-                        <AdSlot placement="blog-in-article" pageType="blog" />
-                      </div>
-                    )}
-                    <p className="text-slate-600">
-                      {para}
-                    </p>
-                  </React.Fragment>
-                );
-              })}
-
+            {/* Article Content - rendered with live markdown preview text formatting */}
+            <div className="rounded-2xl border border-slate-100 bg-white p-6 sm:p-8 shadow-xs">
+              <MarkdownRenderer content={article.content} defaultDir="auto" />
             </div>
 
             <div className="mt-8 mb-4">

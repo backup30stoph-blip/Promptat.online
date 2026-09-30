@@ -6,6 +6,7 @@ import { Eye, Heart, BookOpen, Calendar } from 'lucide-react';
 import { calculateReadingTime } from '../../lib/readingTime';
 import { ImageWithPlaceholder } from '../ImageWithPlaceholder';
 import { FavoriteButton } from '../FavoriteButton';
+import { stripMarkdown } from '../../utils/textUtils';
 
 interface BlogCardProps {
   article: BlogArticle;
@@ -75,11 +76,11 @@ export const BlogCard: React.FC<BlogCardProps> = ({ article }) => {
         </div>
 
         <h3 className="font-sans text-sm font-bold text-slate-900 transition-colors group-hover:text-[#e21833] line-clamp-2">
-          {localizedArticle.title}
+          {stripMarkdown(localizedArticle.title)}
         </h3>
         
         <p className="mt-1.5 line-clamp-3 flex-1 text-xs text-slate-500 leading-relaxed">
-          {localizedArticle.description || article.excerpt}
+          {stripMarkdown(localizedArticle.description || article.excerpt)}
         </p>
 
         {/* Author Details & Stats Row */}

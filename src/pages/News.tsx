@@ -7,6 +7,8 @@ import {
 } from 'lucide-react';
 import { useSeoMetadata } from '../hooks/useSeoMetadata';
 import { AdSlot } from '../components/AdSlot';
+import { MarkdownRenderer } from '../components/MarkdownRenderer';
+import { stripMarkdown } from '../utils/textUtils';
 
 export const News: React.FC = () => {
   const { currentLang, t, isRtl, showNotification, searchQuery, setSearchQuery } = useApp();
@@ -179,11 +181,11 @@ export const News: React.FC = () => {
                       onClick={() => setSelectedNews(item)}
                       className="text-base font-bold text-slate-900 group-hover:text-[#e21833] transition-colors line-clamp-2 cursor-pointer mb-2"
                     >
-                      {title}
+                      {stripMarkdown(title)}
                     </h2>
 
                     <p className="text-xs text-slate-500 line-clamp-3 leading-relaxed mb-4 flex-1">
-                      {excerpt}
+                      {stripMarkdown(excerpt)}
                     </p>
 
                     {/* Tags */}
@@ -266,12 +268,13 @@ export const News: React.FC = () => {
             {/* Modal Body */}
             <div className="overflow-y-auto p-6 space-y-4">
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
-                {currentLang === 'ar' ? selectedNews.title_ar : selectedNews.title}
+                {stripMarkdown(currentLang === 'ar' ? selectedNews.title_ar : selectedNews.title)}
               </h2>
 
-              <div className="prose prose-slate max-w-none text-xs sm:text-sm leading-relaxed text-slate-700 whitespace-pre-line">
-                {currentLang === 'ar' ? selectedNews.content_ar : selectedNews.content}
-              </div>
+              <MarkdownRenderer 
+                content={currentLang === 'ar' ? selectedNews.content_ar : selectedNews.content}
+                className="text-xs sm:text-sm"
+              />
 
               <div className="flex flex-wrap gap-2 pt-4 border-t border-slate-100">
                 {selectedNews.tags.map((tag, i) => (

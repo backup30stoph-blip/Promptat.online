@@ -5,7 +5,8 @@ import { Activity, XCircle, CheckCircle, Clock } from 'lucide-react';
 
 interface AdSlotProps {
   placement: string;
-  pageType: string;
+  pageType?: string;
+  className?: string;
 }
 
 function useSiteAdSettings() {
@@ -21,7 +22,7 @@ function useSiteAdSettings() {
   return { data: settings };
 }
 
-function useAdSlots(placement: string, pageType: string) {
+function useAdSlots(placement: string, pageType: string = 'home') {
   const [slots, setSlots] = useState<AdSlotType[]>([]);
   useEffect(() => {
     supabase
@@ -71,7 +72,7 @@ function useAdConsent() {
 // Enforce max 3 active ad slots
 let renderedAdsCount = 0;
 
-export const AdSlot: React.FC<AdSlotProps> = ({ placement, pageType }) => {
+export const AdSlot: React.FC<AdSlotProps> = ({ placement, pageType = 'home', className = '' }) => {
   const { data: slots } = useAdSlots(placement, pageType);
   const { data: settings } = useSiteAdSettings();
   const hasConsent = useAdConsent();
@@ -221,7 +222,7 @@ export const AdSlot: React.FC<AdSlotProps> = ({ placement, pageType }) => {
   return (
     <div
       ref={containerRef}
-      className="ad-slot-container my-4 relative rounded-xl overflow-hidden flex flex-col items-center justify-center bg-slate-50/50 border border-slate-100"
+      className={`ad-slot-container my-4 relative rounded-xl overflow-hidden flex flex-col items-center justify-center bg-slate-50/50 border border-slate-100 ${className}`}
       style={fixedSize ? { minHeight: fixedSize.height, width: "100%" } : { minHeight: 250, width: "100%" }}
       data-ad-placement={placement}
     >

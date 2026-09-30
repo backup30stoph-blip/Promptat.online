@@ -102,6 +102,7 @@ export interface BlogArticle {
   slug: string;
   cover: string;
   excerpt: string;
+  description?: string;
   content: string; // Markdown supported
   category: string;
   author: {
@@ -167,6 +168,8 @@ export interface SEOMetadata {
   category_id?: string;
   seo_title: string;
   meta_description: string;
+  title?: string;
+  description?: string;
   focus_keyword: string;
   secondary_keywords?: string[];
   slug: string;
@@ -279,6 +282,8 @@ export interface AdSlot {
   position_index: number;
   is_active: boolean;
   raw_snippet?: string;
+  views?: number;
+  clicks?: number;
   created_at?: string;
   updated_at?: string;
 }

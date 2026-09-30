@@ -4,6 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { getLocalizedItem, getLocalizedCategoryTitle } from '../../lib/i18n';
 import { Film, Sparkles, Copy, Check, Video, Play, Camera, Flame } from 'lucide-react';
 import { ImageWithPlaceholder } from '../ImageWithPlaceholder';
+import { stripMarkdown } from '../../utils/textUtils';
 
 interface VideoCardProps {
   video: VideoConcept;
@@ -73,7 +74,7 @@ export const VideoCard: React.FC<VideoCardProps> = ({ video }) => {
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
         <h3 className="font-sans text-sm font-bold text-slate-900 transition-colors group-hover:text-[#e21833] line-clamp-1 mb-2">
-          {localizedVideo.title}
+          {stripMarkdown(localizedVideo.title)}
         </h3>
 
         {/* Video Prompt Snippet Box */}

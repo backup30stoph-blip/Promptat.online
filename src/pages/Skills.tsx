@@ -16,6 +16,8 @@ import { RelatedContent } from '../components/RelatedContent';
 import { ScrollProgressBar } from '../components/ScrollProgressBar';
 import { AdSlot } from '../components/AdSlot';
 import { getLocalizedItem, getLocalizedCategoryTitle } from '../lib/i18n';
+import { MarkdownRenderer } from '../components/MarkdownRenderer';
+import { stripMarkdown } from '../utils/textUtils';
 
 export const Skills: React.FC = () => {
   const { 
@@ -38,6 +40,7 @@ export const Skills: React.FC = () => {
   const [sortBy, setSortBy] = useState<string>('downloads');
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [skillViewMode, setSkillViewMode] = useState<'rendered' | 'raw'>('rendered');
 
   // Determine active skill for single-item SEO fetch
   const currentSkillForSeo = useMemo(() => {
@@ -327,13 +330,36 @@ export const Skills: React.FC = () => {
 
           </div>
 
-          {/* Code Viewer Panel (7 columns) */}
+          {/* Code & Instructions Viewer Panel (7 columns) */}
           <div className="lg:col-span-7 space-y-4">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
-                {t('parameters', 'Instruction Code Payload')}
-              </span>
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-2">
+              <div className="flex items-center gap-1.5 rounded-xl bg-slate-100 p-1">
+                <button
+                  type="button"
+                  onClick={() => setSkillViewMode('rendered')}
+                  className={`rounded-lg px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
+                    skillViewMode === 'rendered'
+                      ? 'bg-white text-slate-900 shadow-xs'
+                      : 'text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  {currentLang === 'ar' ? 'معاينة منسقة' : 'Live Preview'}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSkillViewMode('raw')}
+                  className={`rounded-lg px-3 py-1 text-xs font-bold transition-all cursor-pointer ${
+                    skillViewMode === 'raw'
+                      ? 'bg-white text-slate-900 shadow-xs'
+                      : 'text-slate-500 hover:text-slate-900'
+                  }`}
+                >
+                  {currentLang === 'ar' ? 'كود التوجيهات (Raw)' : 'Raw Code Payload'}
+                </button>
+              </div>
+
               <button
+                type="button"
                 onClick={() => handleCopyCode(currentSkill.markdown_file)}
                 className="flex items-center space-x-1 text-xs font-bold text-[#e21833] hover:text-[#c21124] cursor-pointer"
               >
@@ -351,12 +377,18 @@ export const Skills: React.FC = () => {
               </button>
             </div>
 
-            {/* Rich Code Pre block */}
-            <div className="rounded-2xl border border-slate-200 bg-slate-950 p-6 overflow-x-auto shadow-lg">
-              <pre className="font-mono text-[11px] leading-relaxed text-slate-300 whitespace-pre-wrap select-all">
-                {currentSkill.markdown_file}
-              </pre>
-            </div>
+            {/* Live Formatted Markdown Preview or Raw Code Pre Block */}
+            {skillViewMode === 'rendered' ? (
+              <div className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-xs">
+                <MarkdownRenderer content={currentSkill.markdown_file} defaultDir="auto" />
+              </div>
+            ) : (
+              <div className="rounded-2xl border border-slate-800 bg-slate-950 p-6 overflow-x-auto shadow-lg dir-ltr text-left">
+                <pre className="font-mono text-[11px] leading-relaxed text-slate-300 whitespace-pre-wrap select-all">
+                  {currentSkill.markdown_file}
+                </pre>
+              </div>
+            )}
           </div>
 
         </div>

@@ -7,6 +7,7 @@ import { Copy, Eye, Download, Heart, Check, FileText } from 'lucide-react';
 import { ImageWithPlaceholder } from '../ImageWithPlaceholder';
 import { FavoriteButton } from '../FavoriteButton';
 import { downloadPromptAsTxt } from '../../services/downloadService';
+import { stripMarkdown } from '../../utils/textUtils';
 
 interface PromptCardProps {
   prompt: AIPrompt;
@@ -103,10 +104,10 @@ export const PromptCard: React.FC<PromptCardProps> = ({ prompt }) => {
       {/* Content */}
       <div className="flex flex-1 flex-col p-5">
         <h3 className="font-sans text-sm font-bold text-slate-900 transition-colors group-hover:text-[#e21833] line-clamp-1">
-          {localizedPrompt.title}
+          {stripMarkdown(localizedPrompt.title)}
         </h3>
         <p className="mt-1.5 line-clamp-2 flex-1 text-xs text-slate-500">
-          {localizedPrompt.description}
+          {stripMarkdown(localizedPrompt.description)}
         </p>
 
         {/* Prompt Preview Snippet */}

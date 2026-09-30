@@ -490,7 +490,9 @@ export const SeoMetadataManager: React.FC = () => {
                         hasWarnings ? (
                           <div className="h-2 w-2 rounded-full bg-amber-400" title="Configured with warnings" />
                         ) : (
-                          <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" title="SEO fully optimized" />
+                          <span title="SEO fully optimized">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500" />
+                          </span>
                         )
                       ) : (
                         <div className="h-2 w-2 rounded-full bg-slate-200" title="No custom SEO tags configured yet" />

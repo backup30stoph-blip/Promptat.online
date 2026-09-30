@@ -5,6 +5,7 @@ import { CATEGORIES, getColorClasses } from '../../data/categories';
 import { getLocalizedCategoryTitle, getLocalizedItem } from '../../lib/i18n';
 import { Download, Eye, Heart, FileCode2, ArrowUpRight } from 'lucide-react';
 import { ImageWithPlaceholder } from '../ImageWithPlaceholder';
+import { stripMarkdown } from '../../utils/textUtils';
 
 interface SkillCardProps {
   skill: AISkill;
@@ -78,11 +79,11 @@ export const SkillCard: React.FC<SkillCardProps> = ({ skill }) => {
         </div>
 
         <h3 className="font-sans text-sm font-bold text-slate-900 transition-colors group-hover:text-[#e21833] line-clamp-1">
-          {localizedSkill.title}
+          {stripMarkdown(localizedSkill.title)}
         </h3>
         
         <p className="mt-1.5 line-clamp-2 flex-1 text-xs text-slate-500">
-          {localizedSkill.description}
+          {stripMarkdown(localizedSkill.description)}
         </p>
 
         {/* Integration Spec list */}

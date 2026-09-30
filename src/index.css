@@ -3,6 +3,7 @@
 @theme {
   --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Roboto", ui-sans-serif, system-ui, sans-serif;
+  --font-tajawal: "Tajawal", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   
   --animate-slide-in: slide-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-pulse-slow: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
@@ -17,6 +18,37 @@
       opacity: 1;
     }
   }
+}
+
+/* Primary Arabic and RTL Typography with Tajawal */
+:lang(ar),
+[dir="rtl"],
+html[lang="ar"],
+body[dir="rtl"],
+.font-arabic,
+.font-tajawal {
+  font-family: "Tajawal", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6,
+[dir="rtl"] p,
+[dir="rtl"] span,
+[dir="rtl"] button,
+[dir="rtl"] input,
+[dir="rtl"] textarea {
+  font-family: "Tajawal", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* LTR forced isolation for code and technical segments */
+.dir-ltr,
+[dir="ltr"] {
+  direction: ltr !important;
+  text-align: left;
 }
 
 /* Theme Root Variables - Light Mode Default */

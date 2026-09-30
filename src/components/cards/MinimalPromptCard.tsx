@@ -6,6 +6,7 @@ import { Copy, Eye, Download, Heart, Check, Layers } from 'lucide-react';
 import { ImageWithPlaceholder } from '../ImageWithPlaceholder';
 import { FavoriteButton } from '../FavoriteButton';
 import { downloadPromptAsTxt } from '../../services/downloadService';
+import { stripMarkdown } from '../../utils/textUtils';
 
 interface MinimalPromptCardProps {
   prompt: AIPrompt;
@@ -91,12 +92,12 @@ export const MinimalPromptCard: React.FC<MinimalPromptCardProps> = ({ prompt }) 
         <div>
           <div className="flex items-start justify-between gap-2">
             <h4 className="font-sans text-xs sm:text-sm font-black text-slate-900 line-clamp-1 group-hover:text-indigo-600 transition-colors">
-              {prompt.title}
+              {stripMarkdown(prompt.title)}
             </h4>
           </div>
           
           <p className="mt-1 line-clamp-2 text-[11px] leading-relaxed text-slate-500">
-            {prompt.description}
+            {stripMarkdown(prompt.description)}
           </p>
         </div>
 

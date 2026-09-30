@@ -341,10 +341,10 @@ export const Videos: React.FC = () => {
           </div>
 
           {/* Comments and Related Prompts */}
-          <CommentsSection entityType="video" entityId={video.id} />
+          <CommentsSection contentType="video" contentId={video.id} />
           
           <div className="mt-12">
-            <RelatedContent currentType="video" currentId={video.id} />
+            <RelatedContent type="video" currentId={video.id} />
           </div>
 
         </div>
