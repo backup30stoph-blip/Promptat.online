@@ -109,7 +109,7 @@ export interface NavItemConfig {
   namespace: string;
   label: string;
   href: string;
-  iconName: 'Home' | 'Sparkles' | 'Cpu' | 'Film' | 'BookOpen' | 'Zap';
+  iconName: 'Home' | 'Sparkles' | 'Cpu' | 'Film' | 'BookOpen' | 'Zap' | 'Newspaper';
 }
 
 /**
@@ -135,6 +135,13 @@ export function getNavigation(locale: LanguageCode = 'ar'): NavItemConfig[] {
       iconName: 'Sparkles',
     },
     {
+      id: 'videos',
+      namespace: 'videos',
+      label: isAr ? 'برومبتات الفيديو' : locale === 'fr' ? 'Prompts Vidéo IA' : locale === 'es' ? 'Prompts de Video IA' : locale === 'id' ? 'Prompt Video AI' : 'AI Video Prompts',
+      href: `${prefix}/videos`,
+      iconName: 'Film',
+    },
+    {
       id: 'skills',
       namespace: 'skills',
       label: isAr ? 'مهارات المبدعين' : locale === 'fr' ? 'Compétences Créateurs' : locale === 'es' ? 'Habilidades IA' : locale === 'id' ? 'Keahlian Kreator' : 'Creator Skills',
@@ -142,11 +149,11 @@ export function getNavigation(locale: LanguageCode = 'ar'): NavItemConfig[] {
       iconName: 'Cpu',
     },
     {
-      id: 'videos',
-      namespace: 'videos',
-      label: isAr ? 'فيديوهات بدون وجه' : locale === 'fr' ? 'Vidéos Sans Visage' : locale === 'es' ? 'Videos Sin Rostro' : locale === 'id' ? 'Video Tanpa Wajah' : 'Faceless Videos',
-      href: `${prefix}/videos`,
-      iconName: 'Film',
+      id: 'news',
+      namespace: 'news',
+      label: isAr ? 'أخبار AI' : locale === 'fr' ? 'Actualités IA' : locale === 'es' ? 'Noticias IA' : locale === 'id' ? 'Berita AI' : 'AI News',
+      href: `${prefix}/news`,
+      iconName: 'Newspaper',
     },
     {
       id: 'blog',
@@ -304,13 +311,17 @@ export const PAGE_SEO_MAP: Record<LanguageCode, Record<string, PageSeoItem>> = {
       title: 'أوامر صور الذكاء الاصطناعي | برومبتات أونلاين',
       description: 'تصفح وحمل أفضل أوامر التصوير الواقعي والفني للذكاء الاصطناعي مع إعدادات الكاميرا والإضاءة والبذور.'
     },
+    videos: {
+      title: 'برومبتات الفيديو بالذكاء الاصطناعي وأوامر سينمائية | برومبتات أونلاين',
+      description: 'أوامر ومخططات فيديو احترافية لتوليد مشاهد سينمائية عبر Runway Gen-3 و Sora و Kling AI و Luma Dream Machine.'
+    },
     skills: {
       title: 'مهارات المطورين والكتّاب | برومبتات أونلاين',
       description: 'ملفات .cursorrules وتعليمات السيو البرمجية المتقدمة لتعزيز الإنتاجية عبر نماذج الذكاء الاصطناعي.'
     },
-    videos: {
-      title: 'مخططات الفيديوهات الفيروسية بدون وجه | برومبتات أونلاين',
-      description: 'أفكار وسيناريوهات الفيديوهات الفيروسية بدون وجه لقنوات يوتيوب وتيك توك مع نصوص جاهزة للتعليق الصوتي.'
+    news: {
+      title: 'أخبار الذكاء الاصطناعي والتحديثات اليومية | برومبتات أونلاين',
+      description: 'تغطية حية لأحدث إطلاقات نماذج الذكاء الاصطناعي، أدوات الفيديو وتوليد الصور، وتطورات التقنية لحظة بلحظة.'
     },
     blog: {
       title: 'مدونة وأدلة الذكاء الاصطناعي | برومبتات أونلاين',
@@ -331,20 +342,24 @@ export const PAGE_SEO_MAP: Record<LanguageCode, Record<string, PageSeoItem>> = {
   },
   en: {
     home: {
-      title: 'Promptat Online | AI Prompts, Developer Skills & Video Blueprints',
-      description: 'The premier repository of curated AI image prompts, developer skills, viral faceless video blueprints, and prompt engineering tutorials.'
+      title: 'Promptat Online | AI Prompts, Video Generation & Developer Skills',
+      description: 'The premier repository of curated AI image prompts, cinematic video prompts, developer skills, and AI engineering tutorials.'
     },
     prompts: {
       title: 'Curated AI Image Prompts Library | Promptat Online',
       description: 'Explore photorealistic AI image prompts for Midjourney, FLUX, and Gemini with lighting setups, seeds, and camera parameters.'
     },
+    videos: {
+      title: 'Cinematic AI Video Prompts & Motion Blueprints | Promptat Online',
+      description: 'Engineered video prompts and camera motions for Runway Gen-3, OpenAI Sora, Kling AI, and Luma Dream Machine.'
+    },
     skills: {
       title: 'Developer & Creator AI Skills Library | Promptat Online',
       description: 'Downloadable .cursorrules, multi-step SEO skills, and prompt engineering workflows for AI-powered creators.'
     },
-    videos: {
-      title: 'Faceless Viral Video Blueprints & Scripts | Promptat Online',
-      description: 'High-retention video blueprints, full voiceover scripts, and thumbnail concepts for viral YouTube and TikTok growth.'
+    news: {
+      title: 'Breaking AI News, Model Releases & Tech Intelligence | Promptat Online',
+      description: 'Stay ahead with real-time AI news, frontier model releases (GPT, Claude, Sora, Runway, Flux), and industry developments.'
     },
     blog: {
       title: 'AI Insights, Guides & Tutorials Blog | Promptat Online',
@@ -352,7 +367,7 @@ export const PAGE_SEO_MAP: Record<LanguageCode, Record<string, PageSeoItem>> = {
     },
     search: {
       title: 'Search AI Prompts, Skills & Blueprints | Promptat Online',
-      description: 'Find prompt templates, developer skills, and viral video scripts across the entire Promptat Online library.'
+      description: 'Find prompt templates, developer skills, and video prompts across the entire Promptat Online library.'
     },
     login: {
       title: 'Sign In | Promptat Online',
@@ -365,20 +380,24 @@ export const PAGE_SEO_MAP: Record<LanguageCode, Record<string, PageSeoItem>> = {
   },
   es: {
     home: {
-      title: 'Promptat Online | Prompts de IA, Habilidades y Guías de Video',
-      description: 'La plataforma líder de prompts para generación de imágenes IA, habilidades de desarrollo y plantillas de videos virales.'
+      title: 'Promptat Online | Prompts de IA, Video y Habilidades para Creadores',
+      description: 'La plataforma líder de prompts para generación de imágenes y videos IA, habilidades de desarrollo y noticias de IA.'
     },
     prompts: {
       title: 'Biblioteca de Prompts de Imágenes IA | Promptat Online',
       description: 'Descubre prompts fotorrealistas para Midjourney y Gemini con parámetros de cámara, iluminación y semillas optimizadas.'
     },
+    videos: {
+      title: 'Prompts de Video IA y Movimientos Cinematográficos | Promptat Online',
+      description: 'Prompts avanzados para generadores de video Runway Gen-3, Sora, Kling AI y Luma Dream Machine.'
+    },
     skills: {
       title: 'Habilidades de IA para Desarrolladores y Creadores | Promptat Online',
       description: 'Archivos .cursorrules y flujos de trabajo de ingeniería de prompts para acelerar tu desarrollo con IA.'
     },
-    videos: {
-      title: 'Plantillas y Guiones para Videos Virales Sin Rostro | Promptat Online',
-      description: 'Guiones y conceptos de alta retención para canales virales de YouTube y TikTok con narración lista para usar.'
+    news: {
+      title: 'Noticias y Actualizaciones de Inteligencia Artificial | Promptat Online',
+      description: 'Últimas noticias de IA, lanzamientos de modelos de lenguaje y herramientas de video e imagen en tiempo real.'
     },
     blog: {
       title: 'Blog de Guías y Tutoriales de Inteligencia Artificial | Promptat Online',
@@ -399,20 +418,24 @@ export const PAGE_SEO_MAP: Record<LanguageCode, Record<string, PageSeoItem>> = {
   },
   fr: {
     home: {
-      title: 'Promptat Online | Prompts IA, Compétences et Blueprints Vidéo',
-      description: 'La plateforme de référence pour les prompts d\'images IA, compétences de développement et plans de vidéos virales sans visage.'
+      title: 'Promptat Online | Prompts IA, Vidéo IA et Compétences Créateurs',
+      description: 'La plateforme de référence pour les prompts d\'images IA, prompts vidéo cinématiques et actualités technologiques.'
     },
     prompts: {
       title: 'Bibliothèque de Prompts d\'Images IA | Promptat Online',
       description: 'Explorez des prompts photoréalistes pour Midjourney et Gemini avec réglages de caméra, éclairage et graines.'
     },
+    videos: {
+      title: 'Prompts Vidéo IA et Mouvements de Caméra | Promptat Online',
+      description: 'Prompts et vecteurs de mouvement cinématique pour Runway Gen-3, OpenAI Sora, Kling AI et Luma.'
+    },
     skills: {
       title: 'Compétences IA pour Développeurs et Créateurs | Promptat Online',
       description: 'Fichiers .cursorrules et workflows d\'ingénierie de prompts pour booster votre productivité de développement.'
     },
-    videos: {
-      title: 'Blueprints et Scripts de Vidéos Virales Sans Visage | Promptat Online',
-      description: 'Concepts à forte rétention et scripts vocaux complets pour développer vos chaînes YouTube et TikTok.'
+    news: {
+      title: 'Actualités et Nouveautés sur l\'Intelligence Artificielle | Promptat Online',
+      description: 'Suivez les dernières actualités IA, sorties de modèles (GPT, Claude, Sora, Runway, Flux) et innovations.'
     },
     blog: {
       title: 'Blog d\'Actualités et Tutoriels sur l\'IA | Promptat Online',
@@ -433,20 +456,24 @@ export const PAGE_SEO_MAP: Record<LanguageCode, Record<string, PageSeoItem>> = {
   },
   id: {
     home: {
-      title: 'Promptat Online | Prompt AI, Keahlian & Blueprint Video Viral',
-      description: 'Platform kurasi prompt gambar AI, keahlian pengembang .cursorrules, blueprint video viral tanpa wajah, dan panduan lengkap.'
+      title: 'Promptat Online | Prompt AI, Video AI & Keahlian Pengembang',
+      description: 'Platform kurasi prompt gambar AI, prompt video AI sinematik, keahlian pengembang .cursorrules, dan berita AI.'
     },
     prompts: {
       title: 'Pustaka Prompt Gambar AI Pilihan | Promptat Online',
       description: 'Jelajahi prompt fotorealistis untuk Midjourney dan Gemini dengan pengaturan pencahayaan, kamera, dan seed.'
     },
+    videos: {
+      title: 'Prompt Video AI & Gerakan Kamera Sinematik | Promptat Online',
+      description: 'Prompt video berkualitas tinggi untuk Runway Gen-3, OpenAI Sora, Kling AI, dan Luma Dream Machine.'
+    },
     skills: {
       title: 'Pustaka Keahlian Pengembang AI | Promptat Online',
       description: 'Unduh berkas .cursorrules dan alur kerja rekayasa prompt untuk mempercepat produktivitas koding dengan AI.'
     },
-    videos: {
-      title: 'Blueprint & Skrip Video Viral Tanpa Wajah | Promptat Online',
-      description: 'Konsep video retensi tinggi dan skrip suara lengkap untuk pertumbuhan kanal YouTube dan TikTok viral.'
+    news: {
+      title: 'Berita AI Terkini & Peluncuran Model | Promptat Online',
+      description: 'Ikuti perkembangan dan berita kecerdasan buatan, rilis model bahasa, dan alat AI terbaru.'
     },
     blog: {
       title: 'Blog Panduan & Tutorial Kecerdasan Buatan | Promptat Online',

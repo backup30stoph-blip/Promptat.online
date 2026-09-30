@@ -694,6 +694,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       } else if (parentTab === 'blog') {
         setActiveTab('blog');
         setActiveDetail({ type: 'blog', slug });
+      } else if (parentTab === 'news' || parentTab === 'ai-news') {
+        setActiveTab('news');
+        setActiveDetail(null);
       } else {
         // Fallback for custom routing
         setActiveTab(parentTab);
@@ -710,6 +713,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         setActiveTab('videos');
       } else if (tab === 'blog') {
         setActiveTab('blog');
+      } else if (tab === 'news' || tab === 'ai-news') {
+        setActiveTab('news');
       } else {
         setActiveTab(tab);
       }

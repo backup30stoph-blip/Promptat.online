@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Sparkles, Search, Cpu, BookOpen, Menu, Bookmark, Home as HomeIcon, Zap, Film, Flame } from 'lucide-react';
+import { Sparkles, Search, Cpu, BookOpen, Menu, Bookmark, Home as HomeIcon, Zap, Film, Flame, Newspaper } from 'lucide-react';
 import { UserProfileModal } from '../UserProfileModal';
 import { AuthModal } from '../AuthModal';
 import { NotificationsDropdown } from './NotificationsDropdown';
@@ -16,6 +16,7 @@ const ICON_MAP = {
   Film: Film,
   BookOpen: BookOpen,
   Zap: Zap,
+  Newspaper: Newspaper,
 };
 
 export const Navbar: React.FC = () => {

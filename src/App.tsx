@@ -9,6 +9,7 @@ import { Prompts } from './pages/Prompts';
 import { Skills } from './pages/Skills';
 import { Videos } from './pages/Videos';
 import { Blog } from './pages/Blog';
+import { News } from './pages/News';
 import { Search } from './pages/Search';
 import { Login } from './pages/Login';
 import { Admin } from './pages/Admin';
@@ -75,6 +76,8 @@ const AppContent: React.FC = () => {
         return <Videos />;
       case 'blog':
         return <Blog />;
+      case 'news':
+        return <News />;
       case 'search':
         return <Search />;
       case 'login':

@@ -11,10 +11,11 @@ export const Footer: React.FC = () => {
 
   // Navigation Links configuration
   const hubLinks: FooterLink[] = [
-    { label: t('navPrompts', 'Prompts'), href: '/prompts' },
-    { label: t('navSkills', 'Skills'), href: '/skills' },
-    { label: t('navVideos', 'Video Blueprints'), href: '/videos' },
-    { label: t('navBlog', 'Blog'), href: '/blog' }
+    { label: t('navPrompts', 'أوامر الصور'), href: '/prompts' },
+    { label: t('navVideos', 'برومبتات الفيديو'), href: '/videos' },
+    { label: t('navSkills', 'مهارات المبدعين'), href: '/skills' },
+    { label: t('navNews', 'أخبار AI'), href: '/news' },
+    { label: t('navBlog', 'مدونة الذكاء الاصطناعي'), href: '/blog' }
   ];
 
   const nicheLinks: FooterLink[] = [

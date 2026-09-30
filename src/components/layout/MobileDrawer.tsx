@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { 
   X, Search, Home as HomeIcon, Sparkles, Cpu, Film, BookOpen, 
-  Bookmark, Zap, Flame, Globe, User, Settings, Shield, LogOut, LogIn, Check 
+  Bookmark, Zap, Flame, Globe, User, Settings, Shield, LogOut, LogIn, Check, Newspaper 
 } from 'lucide-react';
 import { SUPPORTED_LANGUAGES, LanguageCode, getNavigation } from '../../lib/i18n';
 
@@ -13,6 +13,7 @@ const ICON_MAP = {
   Film: Film,
   BookOpen: BookOpen,
   Zap: Zap,
+  Newspaper: Newspaper,
 };
 
 interface MobileDrawerProps {
