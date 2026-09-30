@@ -55,7 +55,7 @@ export const AdminLayout: React.FC<AdminLayoutProps> = ({
     { id: 'prompts' as AdminTab, title: 'Image Prompts', icon: Sparkles, color: 'text-violet-500', bg: 'hover:bg-violet-50/50' },
     { id: 'categories' as AdminTab, title: 'Categories / Tax', icon: Compass, color: 'text-teal-500', bg: 'hover:bg-teal-50/50' },
     { id: 'skills' as AdminTab, title: 'Creator Skills', icon: Code, color: 'text-emerald-500', bg: 'hover:bg-emerald-50/50' },
-    { id: 'videos' as AdminTab, title: 'Faceless Videos', icon: Video, color: 'text-amber-500', bg: 'hover:bg-amber-50/50' },
+    { id: 'videos' as AdminTab, title: 'AI Video Prompts', icon: Video, color: 'text-amber-500', bg: 'hover:bg-amber-50/50' },
     { id: 'blogs' as AdminTab, title: 'Blog Playbooks', icon: BookOpen, color: 'text-sky-500', bg: 'hover:bg-sky-50/50' },
     { id: 'pages' as AdminTab, title: 'Static Core Pages', icon: FileSignature, color: 'text-orange-500', bg: 'hover:bg-orange-50/50' },
     { id: 'media' as AdminTab, title: 'Media Manager', icon: ImageIcon, color: 'text-rose-500', bg: 'hover:bg-rose-50/50' },

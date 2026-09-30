@@ -1921,12 +1921,12 @@ export const Admin: React.FC = () => {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="font-sans text-lg font-bold text-slate-900">
-                  Manage Faceless Video Concepts ({videos.length})
+                  Manage AI Video Prompts ({videos.length})
                 </h2>
                 {!isEditing && (
                   <button onClick={() => setIsEditing(true)} className="flex items-center gap-1 rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-bold text-white hover:bg-slate-800 cursor-pointer">
                     <Plus className="h-4 w-4" />
-                    <span>Add Video Concept</span>
+                    <span>Add AI Video Prompt</span>
                   </button>
                 )}
               </div>
@@ -1935,7 +1935,7 @@ export const Admin: React.FC = () => {
                 <form onSubmit={handleVideoAction} className="rounded-xl border border-slate-200 bg-white p-6 shadow-md space-y-4">
                   <div className="flex justify-between items-center border-b border-slate-100 pb-3">
                     <h3 className="text-sm font-bold text-slate-800 uppercase">
-                      {editId ? 'Edit Selected Video Concept' : 'Create New Faceless Video Concept'}
+                      {editId ? 'Edit Selected Video Concept' : 'Create New AI Video Prompt Concept'}
                     </h3>
                     <button type="button" onClick={resetForms} className="text-slate-400 hover:text-slate-600">
                       <X className="h-4 w-4" />

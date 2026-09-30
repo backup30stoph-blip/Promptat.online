@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useI18n } from '../../hooks/useI18n';
 import { Sparkles, Search, Cpu, BookOpen, Menu, Bookmark, Home as HomeIcon, Zap, Film, Flame, Newspaper } from 'lucide-react';
 import { UserProfileModal } from '../UserProfileModal';
 import { AuthModal } from '../AuthModal';
@@ -27,17 +28,16 @@ export const Navbar: React.FC = () => {
     setSearchQuery,
     state,
     user,
-    currentLang,
     switchLanguage,
-    t
   } = useApp();
+
+  const { lang, t } = useI18n();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileModalOpen, setProfileModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
 
-  const dynamicNavItems = getNavigation(currentLang);
-
+  const dynamicNavItems = getNavigation(lang);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,7 +63,7 @@ export const Navbar: React.FC = () => {
               type="button"
               onClick={() => setMobileMenuOpen(true)}
               className="lg:hidden rounded-xl p-2 text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
-              aria-label={t('nav.openMenu', 'فتح القائمة')}
+              aria-label={t('navOpenMenu', lang)}
               aria-expanded={mobileMenuOpen}
               aria-controls="mobile-drawer"
             >
@@ -91,7 +91,7 @@ export const Navbar: React.FC = () => {
                   type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={t('searchPromptSkillGuide', 'Find a prompt, skill, guide...')}
+                  placeholder={t('searchPromptSkillGuide', lang)}
                   className="w-full rounded-xl border-0 bg-white py-2 pl-3 pr-10 rtl:pr-3 rtl:pl-10 text-xs font-semibold text-slate-800 placeholder-slate-400 outline-none focus:ring-2 focus:ring-red-300 shadow-inner"
                 />
                 <button type="submit" className="absolute inset-y-0 right-0 rtl:right-auto rtl:left-0 flex items-center pr-3 rtl:pl-3 text-slate-400 hover:text-slate-600 cursor-pointer">
@@ -103,9 +103,29 @@ export const Navbar: React.FC = () => {
             {/* 3. Action Controls Cluster */}
             <div className="flex items-center gap-2 sm:gap-3 shrink-0 ms-auto">
 
+              {/* AI News Quick Direct Action */}
+              <button
+                type="button"
+                onClick={() => navigateTo('news')}
+                className={`hidden md:flex items-center gap-1.5 rounded-xl px-3 py-1.5 text-xs font-bold transition-all cursor-pointer ${
+                  activeTab === 'news'
+                    ? 'bg-white text-[#e21833] shadow-xs'
+                    : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
+                }`}
+                title={t('navNews', lang)}
+                aria-label={t('navNews', lang)}
+              >
+                <Newspaper className={`h-4 w-4 ${activeTab === 'news' ? 'text-[#e21833]' : 'text-red-100'}`} />
+                <span>{t('navNews', lang)}</span>
+                <span className="relative flex h-2 w-2 ms-0.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-300 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400" />
+                </span>
+              </button>
+
               {/* Compact Language Selector (Globe + Flag + Code) */}
               <div className="hidden sm:inline-block">
-                <LanguageSelector currentLang={currentLang} onLanguageChange={switchLanguage} variant="navbar" />
+                <LanguageSelector currentLang={lang} onLanguageChange={switchLanguage} variant="navbar" />
               </div>
 
               {/* Saved Collection Icon Button */}
@@ -113,8 +133,8 @@ export const Navbar: React.FC = () => {
                 type="button"
                 onClick={() => setProfileModalOpen(true)}
                 className="relative flex items-center justify-center h-9 w-9 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-all cursor-pointer border border-white/20 shrink-0"
-                title={t('navSavedCollection', 'المجموعة المحفوظة')}
-                aria-label={t('navSavedCollection', 'المجموعة المحفوظة')}
+                title={t('navSavedCollection', lang)}
+                aria-label={t('navSavedCollection', lang)}
               >
                 <Bookmark className="h-4 w-4 text-red-200" />
                 {bookmarkCount > 0 && (
@@ -162,6 +182,14 @@ export const Navbar: React.FC = () => {
                   >
                     <Icon className={`h-4 w-4 ${isActive ? 'text-[#e21833]' : 'text-slate-400'}`} />
                     <span>{item.label}</span>
+                    {item.id === 'news' && (
+                      <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                        isActive ? 'bg-[#e21833] text-white' : 'bg-red-100 text-[#e21833]'
+                      }`}>
+                        <span className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-white' : 'bg-[#e21833]'} animate-pulse`} />
+                        {t('navNewsBadge', lang)}
+                      </span>
+                    )}
                   </button>
                 );
               })}
@@ -175,7 +203,7 @@ export const Navbar: React.FC = () => {
                 className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer"
               >
                 <Zap className="h-3.5 w-3.5 text-amber-500" />
-                <span>{t('navLatest', 'الأحدث')}</span>
+                <span>{t('navLatest', lang)}</span>
               </button>
               <button 
                 type="button"
@@ -183,7 +211,7 @@ export const Navbar: React.FC = () => {
                 className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors cursor-pointer"
               >
                 <Flame className="h-3.5 w-3.5 text-rose-500" />
-                <span>{t('navPopular', 'الأكثر شعبية')}</span>
+                <span>{t('navPopular', lang)}</span>
               </button>
             </div>
 
@@ -214,3 +242,4 @@ export const Navbar: React.FC = () => {
     </nav>
   );
 };
+

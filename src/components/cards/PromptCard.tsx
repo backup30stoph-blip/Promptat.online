@@ -55,12 +55,12 @@ export const PromptCard: React.FC<PromptCardProps> = ({ prompt }) => {
     >
       
       {/* Thumbnail and badges */}
-      <div className="relative aspect-4/3 overflow-hidden bg-slate-50">
+      <div className="relative aspect-[3/4] overflow-hidden bg-slate-50">
         <ImageWithPlaceholder
           src={prompt.thumbnail || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'}
           alt={localizedPrompt.title}
-          aspectRatio="aspect-4/3"
-          imgClassName="transition-transform duration-500 group-hover:scale-103"
+          aspectRatio="aspect-[3/4]"
+          imgClassName="transition-transform duration-500 group-hover:scale-103 object-cover w-full h-full"
         />
         <div className="absolute top-3 left-3 rtl:left-auto rtl:right-3 flex flex-wrap gap-1.5 z-10">
           {category && (

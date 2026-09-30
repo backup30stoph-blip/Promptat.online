@@ -48,12 +48,12 @@ export const MinimalPromptCard: React.FC<MinimalPromptCardProps> = ({ prompt }) 
       id={`minimal-prompt-card-${prompt.id}`}
     >
       {/* Visual Header Grid */}
-      <div className="relative aspect-[16/10] w-full overflow-hidden rounded-lg bg-slate-50 border border-slate-100 mb-3">
+      <div className="relative aspect-[3/4] w-full overflow-hidden rounded-lg bg-slate-50 border border-slate-100 mb-3">
         <ImageWithPlaceholder
           src={prompt.thumbnail || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'}
           alt={prompt.title}
-          aspectRatio="aspect-[16/10]"
-          imgClassName="transition-transform duration-300 group-hover:scale-[1.02]"
+          aspectRatio="aspect-[3/4]"
+          imgClassName="transition-transform duration-300 group-hover:scale-[1.02] object-cover w-full h-full"
         />
         
         {/* Absolute Badges */}

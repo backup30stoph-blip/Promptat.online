@@ -115,53 +115,25 @@ export interface NavItemConfig {
 /**
  * Architecture v2 dynamic navigation builder based on active locale
  */
-export function getNavigation(locale: LanguageCode = 'ar'): NavItemConfig[] {
-  const isAr = locale === 'ar';
-  const prefix = isAr ? '' : `/${locale}`;
+export function getNavigation(locale: LanguageCode): NavItemConfig[] {
+  const prefix = locale === 'ar' ? '' : `/${locale}`;
+
+  const navLabels: Record<string, Record<LanguageCode, string>> = {
+    home: { ar: 'الرئيسية', en: 'Home', es: 'Inicio', fr: 'Accueil', id: 'Beranda' },
+    prompts: { ar: 'أوامر الصور', en: 'Image Prompts', es: 'Prompts de Imágenes', fr: 'Prompts Images', id: 'Prompt Gambar' },
+    videos: { ar: 'برومبتات الفيديو', en: 'AI Video Prompts', es: 'Prompts de Video IA', fr: 'Prompts Vidéo IA', id: 'Prompt Video AI' },
+    skills: { ar: 'مهارات المبدعين', en: 'Creator Skills', es: 'Habilidades IA', fr: 'Compétences Créateurs', id: 'Keahlian Kreator' },
+    news: { ar: 'أخبار AI', en: 'AI News', es: 'Noticias IA', fr: 'Actualités IA', id: 'Berita AI' },
+    blog: { ar: 'مدونة الذكاء الاصطناعي', en: 'AI Blog', es: 'Blog de IA', fr: 'Blog IA', id: 'Blog AI' },
+  };
 
   return [
-    {
-      id: 'home',
-      namespace: 'pages',
-      label: isAr ? 'الرئيسية' : locale === 'fr' ? 'Accueil' : locale === 'es' ? 'Inicio' : locale === 'id' ? 'Beranda' : 'Home',
-      href: isAr ? '/' : `/${locale}`,
-      iconName: 'Home',
-    },
-    {
-      id: 'prompts',
-      namespace: 'prompts',
-      label: isAr ? 'أوامر الصور' : locale === 'fr' ? 'Prompts Images' : locale === 'es' ? 'Prompts de Imágenes' : locale === 'id' ? 'Prompt Gambar' : 'Image Prompts',
-      href: `${prefix}/prompts`,
-      iconName: 'Sparkles',
-    },
-    {
-      id: 'videos',
-      namespace: 'videos',
-      label: isAr ? 'برومبتات الفيديو' : locale === 'fr' ? 'Prompts Vidéo IA' : locale === 'es' ? 'Prompts de Video IA' : locale === 'id' ? 'Prompt Video AI' : 'AI Video Prompts',
-      href: `${prefix}/videos`,
-      iconName: 'Film',
-    },
-    {
-      id: 'skills',
-      namespace: 'skills',
-      label: isAr ? 'مهارات المبدعين' : locale === 'fr' ? 'Compétences Créateurs' : locale === 'es' ? 'Habilidades IA' : locale === 'id' ? 'Keahlian Kreator' : 'Creator Skills',
-      href: `${prefix}/skills`,
-      iconName: 'Cpu',
-    },
-    {
-      id: 'news',
-      namespace: 'news',
-      label: isAr ? 'أخبار AI' : locale === 'fr' ? 'Actualités IA' : locale === 'es' ? 'Noticias IA' : locale === 'id' ? 'Berita AI' : 'AI News',
-      href: `${prefix}/news`,
-      iconName: 'Newspaper',
-    },
-    {
-      id: 'blog',
-      namespace: 'blog',
-      label: isAr ? 'مدونة الذكاء الاصطناعي' : locale === 'fr' ? 'Blog IA' : locale === 'es' ? 'Blog de IA' : locale === 'id' ? 'Blog AI' : 'AI Blog',
-      href: `${prefix}/blog`,
-      iconName: 'BookOpen',
-    },
+    { id: 'home', namespace: 'pages', label: navLabels.home[locale] || navLabels.home.en, href: locale === 'ar' ? '/' : `/${locale}`, iconName: 'Home' },
+    { id: 'prompts', namespace: 'prompts', label: navLabels.prompts[locale] || navLabels.prompts.en, href: `${prefix}/prompts`, iconName: 'Sparkles' },
+    { id: 'videos', namespace: 'videos', label: navLabels.videos[locale] || navLabels.videos.en, href: `${prefix}/videos`, iconName: 'Film' },
+    { id: 'skills', namespace: 'skills', label: navLabels.skills[locale] || navLabels.skills.en, href: `${prefix}/skills`, iconName: 'Cpu' },
+    { id: 'news', namespace: 'news', label: navLabels.news[locale] || navLabels.news.en, href: `${prefix}/news`, iconName: 'Newspaper' },
+    { id: 'blog', namespace: 'blog', label: navLabels.blog[locale] || navLabels.blog.en, href: `${prefix}/blog`, iconName: 'BookOpen' },
   ];
 }
 
@@ -508,6 +480,7 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     navVideos: 'برومبتات الفيديو',
     navSkills: 'مهارات المبدعين',
     navNews: 'أخبار AI',
+    navNewsBadge: 'مباشر',
     navBlog: 'مدونة الذكاء الاصطناعي',
     navSearch: 'بحث',
     navLatest: 'الأحدث',
@@ -517,6 +490,11 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     navSignOut: 'تسجيل الخروج',
     navSignIn: 'تسجيل الدخول',
     selectLanguage: 'اختر اللغة',
+    navOpenMenu: 'فتح القائمة',
+    navCloseMenu: 'إغلاق القائمة',
+    navPrimary: 'الأقسام الرئيسية',
+    navSections: 'الأقسام الرئيسية',
+    navBrowseGroup: 'التصفح والتصفية',
     searchPlaceholder: 'ابحث في أكثر من 500 مخطط وأمر ذكاء اصطناعي...',
     searchPromptSkillGuide: 'ابحث عن أمر، مهارة، دليل...',
     searchEverything: 'بحث شامل',
@@ -576,7 +554,25 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     backToPrompts: 'العودة لمكتبة الأوامر',
     backToSkills: 'العودة لمهارات الذكاء الاصطناعي',
     backToVideos: 'العودة لمخططات الفيديو',
+    backToVideoPrompts: 'العودة إلى برومبتات الفيديو',
     backToBlog: 'العودة للمدونة',
+    primaryVideoPrompt: 'برومبت الفيديو الأساسي',
+    copiedPromptSuccess: 'تم نسخ البرومبت بنجاح!',
+    copiedShareLink: 'تم نسخ رابط الخبر!',
+    copied: 'تم النسخ!',
+    copyFullPrompt: 'نسخ البرومبت بالكامل',
+    motionIntensity: 'قوة حركة الفيديو (Motion)',
+    motionHint: '1 = حركة بطيئة ناعمة • 10 = حركة سريعة وسينمائية',
+    cameraMovement: 'حركة الكاميرا (Camera Motion)',
+    supportedGenerators: 'محركات التوليد المدعومة',
+    shotDetails: 'مواصفات المشهد',
+    resolution: 'الدقة',
+    saved: 'محفوظ',
+    save: 'حفظ',
+    allModels: 'جميع النماذج',
+    searchVideoPromptsPlaceholder: 'ابحث في برومبتات الفيديو...',
+    noVideoPromptsFound: 'لم يتم العثور على برومبتات فيديو',
+    noVideoPromptsFoundDesc: 'جرب البحث بكلمات مختلفة أو إزالة الفلاتر.',
     relatedContent: 'محتوى ذو صلة قد يهمك',
     loading: 'جاري التحميل...',
     noResultsFound: 'لم يتم العثور على نتائج مطابقة',
@@ -666,6 +662,7 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     myCollectionTitle: 'مجموعتي المحفوظة',
     emptyCollectionDesc: 'لم تقم بحفظ أي قوالب أو أوامر بعد. اضغط على أيقونة الحفظ في أي بطاقة لإضافتها هنا.',
     accountSettingsTitle: 'إعدادات الحساب',
+    accountSettings: 'إعدادات الحساب',
 
     // Admin
     adminTitle: 'لوحة إدارة الموقع',
@@ -684,6 +681,7 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     navVideos: 'AI Video Prompts',
     navSkills: 'Skills Library',
     navNews: 'AI News',
+    navNewsBadge: 'LIVE',
     navBlog: 'Blogs & Guides',
     navSearch: 'Search',
     navLatest: 'Latest',
@@ -693,6 +691,11 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     navSignOut: 'Sign Out',
     navSignIn: 'Sign In',
     selectLanguage: 'Select Language',
+    navOpenMenu: 'Open navigation menu',
+    navCloseMenu: 'Close navigation menu',
+    navPrimary: 'Main Navigation',
+    navSections: 'Main Sections',
+    navBrowseGroup: 'Browse & Filters',
     searchPlaceholder: 'Search 500+ AI prompt blueprints & skills...',
     searchPromptSkillGuide: 'Find a prompt, skill, guide...',
     searchEverything: 'Search everything',
@@ -752,7 +755,25 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     backToPrompts: 'Back to Prompts',
     backToSkills: 'Back to Skills',
     backToVideos: 'Back to Videos',
+    backToVideoPrompts: 'Back to AI Video Prompts',
     backToBlog: 'Back to Blog',
+    primaryVideoPrompt: 'Primary Video Prompt',
+    copiedPromptSuccess: 'Prompt copied successfully!',
+    copiedShareLink: 'News link copied!',
+    copied: 'Copied!',
+    copyFullPrompt: 'Copy Full Prompt',
+    motionIntensity: 'Video Motion Intensity',
+    motionHint: '1 = Smooth slow motion • 10 = Fast cinematic action',
+    cameraMovement: 'Camera Movement',
+    supportedGenerators: 'Supported AI Video Engines',
+    shotDetails: 'Shot Specifications',
+    resolution: 'Resolution',
+    saved: 'Saved',
+    save: 'Save',
+    allModels: 'All Models',
+    searchVideoPromptsPlaceholder: 'Search video prompts...',
+    noVideoPromptsFound: 'No video prompts found',
+    noVideoPromptsFoundDesc: 'Try adjusting your search terms or selecting a different model filter.',
     relatedContent: 'Related Content You Might Like',
     loading: 'Loading...',
     noResultsFound: 'No matching results found',
@@ -842,6 +863,7 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     myCollectionTitle: 'My Saved Collection',
     emptyCollectionDesc: 'No items saved yet. Click the bookmark icon on any card to save it here.',
     accountSettingsTitle: 'Account Settings',
+    accountSettings: 'Account Settings',
 
     // Admin
     adminTitle: 'Admin Management Console',
@@ -860,6 +882,7 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     navVideos: 'Prompts de Video IA',
     navSkills: 'Habilidades',
     navNews: 'Noticias IA',
+    navNewsBadge: 'EN VIVO',
     navBlog: 'Blog y Guías',
     navSearch: 'Buscar',
     navLatest: 'Recientes',
@@ -869,6 +892,11 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     navSignOut: 'Cerrar Sesión',
     navSignIn: 'Iniciar Sesión',
     selectLanguage: 'Seleccionar Idioma',
+    navOpenMenu: 'Abrir menú de navegación',
+    navCloseMenu: 'Cerrar menú de navegación',
+    navPrimary: 'Navegación Principal',
+    navSections: 'Secciones Principales',
+    navBrowseGroup: 'Exploración y Filtros',
     searchPlaceholder: 'Buscar en más de 500 plantillas y prompts de IA...',
     searchPromptSkillGuide: 'Buscar prompt, habilidad, tutorial...',
     searchEverything: 'Buscar todo',
@@ -928,7 +956,25 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     backToPrompts: 'Volver a Prompts',
     backToSkills: 'Volver a Habilidades',
     backToVideos: 'Volver a Videos',
+    backToVideoPrompts: 'Volver a Prompts de Video IA',
     backToBlog: 'Volver al Blog',
+    primaryVideoPrompt: 'Prompt de Video Principal',
+    copiedPromptSuccess: '¡Prompt copiado con éxito!',
+    copiedShareLink: '¡Enlace de noticia copiado!',
+    copied: '¡Copiado!',
+    copyFullPrompt: 'Copiar Prompt Completo',
+    motionIntensity: 'Intensidad de Movimiento de Video',
+    motionHint: '1 = Movimiento suave y lento • 10 = Acción cinematográfica rápida',
+    cameraMovement: 'Movimiento de Cámara',
+    supportedGenerators: 'Motores de Video IA Compatibles',
+    shotDetails: 'Especificaciones de la Toma',
+    resolution: 'Resolución',
+    saved: 'Guardado',
+    save: 'Guardar',
+    allModels: 'Todos los Modelos',
+    searchVideoPromptsPlaceholder: 'Buscar prompts de video...',
+    noVideoPromptsFound: 'No se encontraron prompts de video',
+    noVideoPromptsFoundDesc: 'Intenta ajustar tus términos de búsqueda o cambiar el filtro de modelo.',
     relatedContent: 'Contenido Relacionado',
     loading: 'Cargando...',
     noResultsFound: 'No se encontraron resultados',
@@ -1018,6 +1064,7 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     myCollectionTitle: 'Mi Colección Guardada',
     emptyCollectionDesc: 'No hay elementos guardados aún. Haz clic en el icono de guardar en cualquier tarjeta.',
     accountSettingsTitle: 'Configuración de Cuenta',
+    accountSettings: 'Configuración de Cuenta',
 
     // Admin
     adminTitle: 'Consola de Administración',
@@ -1036,6 +1083,7 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     navVideos: 'Prompts Vidéo IA',
     navSkills: 'Compétences',
     navNews: 'Actualités IA',
+    navNewsBadge: 'EN DIRECT',
     navBlog: 'Blog & Guides',
     navSearch: 'Rechercher',
     navLatest: 'Récents',
@@ -1045,6 +1093,11 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     navSignOut: 'Déconnexion',
     navSignIn: 'Connexion',
     selectLanguage: 'Choisir la langue',
+    navOpenMenu: 'Ouvrir le menu de navigation',
+    navCloseMenu: 'Fermer le menu de navigation',
+    navPrimary: 'Navigation Principale',
+    navSections: 'Sections Principales',
+    navBrowseGroup: 'Parcourir et Filtres',
     searchPlaceholder: 'Rechercher parmi 500+ modèles de prompts et compétences IA...',
     searchPromptSkillGuide: 'Trouver un prompt, compétence, guide...',
     searchEverything: 'Tout rechercher',
@@ -1104,7 +1157,25 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     backToPrompts: 'Retour aux Prompts',
     backToSkills: 'Retour aux Compétences',
     backToVideos: 'Retour aux Vidéos',
+    backToVideoPrompts: 'Retour aux Prompts Vidéo IA',
     backToBlog: 'Retour au Blog',
+    primaryVideoPrompt: 'Prompt Vidéo Principal',
+    copiedPromptSuccess: 'Prompt copié avec succès !',
+    copiedShareLink: 'Lien de l\'actualité copié !',
+    copied: 'Copié !',
+    copyFullPrompt: 'Copier le Prompt Complet',
+    motionIntensity: 'Intensité du Mouvement Vidéo',
+    motionHint: '1 = Mouvement fluide et lent • 10 = Action cinématique rapide',
+    cameraMovement: 'Mouvement de Caméra',
+    supportedGenerators: 'Moteurs Vidéo IA Pris en Charge',
+    shotDetails: 'Spécifications du Plan',
+    resolution: 'Résolution',
+    saved: 'Enregistré',
+    save: 'Enregistrer',
+    allModels: 'Tous les Modèles',
+    searchVideoPromptsPlaceholder: 'Rechercher des prompts vidéo...',
+    noVideoPromptsFound: 'Aucun prompt vidéo trouvé',
+    noVideoPromptsFoundDesc: 'Essayez de modifier votre recherche ou de changer de filtre.',
     relatedContent: 'Contenu Recommandé',
     loading: 'Chargement...',
     noResultsFound: 'Aucun résultat trouvé',
@@ -1194,6 +1265,7 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     myCollectionTitle: 'Ma Collection Enregistrée',
     emptyCollectionDesc: 'Aucun élément enregistré pour l\'instant. Cliquez sur l\'icône de favori sur une carte.',
     accountSettingsTitle: 'Paramètres du Compte',
+    accountSettings: 'Paramètres du Compte',
 
     // Admin
     adminTitle: 'Console d\'Administration',
@@ -1212,6 +1284,7 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     navVideos: 'Prompt Video AI',
     navSkills: 'Pustaka Keahlian',
     navNews: 'Berita AI',
+    navNewsBadge: 'LANGSUNG',
     navBlog: 'Blog & Panduan',
     navSearch: 'Cari',
     navLatest: 'Terbaru',
@@ -1221,6 +1294,11 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     navSignOut: 'Keluar',
     navSignIn: 'Masuk',
     selectLanguage: 'Pilih Bahasa',
+    navOpenMenu: 'Buka menu navigasi',
+    navCloseMenu: 'Tutup menu navigasi',
+    navPrimary: 'Navigasi Utama',
+    navSections: 'Bagian Utama',
+    navBrowseGroup: 'Jelajah & Filter',
     searchPlaceholder: 'Cari 500+ blueprint prompt & keahlian AI...',
     searchPromptSkillGuide: 'Temukan prompt, keahlian, panduan...',
     searchEverything: 'Cari semua',
@@ -1280,7 +1358,25 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     backToPrompts: 'Kembali ke Prompt',
     backToSkills: 'Kembali ke Keahlian',
     backToVideos: 'Kembali ke Video',
+    backToVideoPrompts: 'Kembali ke Prompt Video AI',
     backToBlog: 'Kembali ke Blog',
+    primaryVideoPrompt: 'Prompt Video Utama',
+    copiedPromptSuccess: 'Prompt berhasil disalin!',
+    copiedShareLink: 'Tautan berita disalin!',
+    copied: 'Tersalin!',
+    copyFullPrompt: 'Salin Seluruh Prompt',
+    motionIntensity: 'Intensitas Gerakan Video',
+    motionHint: '1 = Gerakan lambat halus • 10 = Aksi sinematik cepat',
+    cameraMovement: 'Gerakan Kamera',
+    supportedGenerators: 'Mesin Video AI yang Didukung',
+    shotDetails: 'Spesifikasi Pengambilan Gambar',
+    resolution: 'Resolusi',
+    saved: 'Tersimpan',
+    save: 'Simpan',
+    allModels: 'Semua Model',
+    searchVideoPromptsPlaceholder: 'Cari prompt video...',
+    noVideoPromptsFound: 'Tidak ada prompt video ditemukan',
+    noVideoPromptsFoundDesc: 'Coba sesuaikan kata kunci pencarian atau ubah filter model.',
     relatedContent: 'Konten Terkait',
     loading: 'Memuat...',
     noResultsFound: 'Hasil tidak ditemukan',
@@ -1370,6 +1466,7 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
     myCollectionTitle: 'Koleksi Tersimpan Saya',
     emptyCollectionDesc: 'Belum ada item tersimpan. Klik ikon simpan pada kartu mana pun untuk menambahkannya di sini.',
     accountSettingsTitle: 'Pengaturan Akun',
+    accountSettings: 'Pengaturan Akun',
 
     // Admin
     adminTitle: 'Konsol Manajemen Admin',
@@ -1382,17 +1479,30 @@ export const UI_DICTIONARY: Record<LanguageCode, Record<string, string>> = {
   }
 };
 
-// Global translation accessor
-export function t(key: string, lang: LanguageCode = 'ar', fallback?: string): string {
-  const dict = UI_DICTIONARY[lang] || UI_DICTIONARY.ar;
-  if (dict && dict[key]) {
-    return dict[key];
+/**
+ * Strict Translation function:
+ * Direct dictionary lookup for the requested target language.
+ * Never defaults to Arabic or another language when another locale is active.
+ * Falls back to explicit fallback parameter, or English dictionary as last resort.
+ */
+export function t(key: string, lang: LanguageCode, fallback?: string): string {
+  // 1. Strict dictionary lookup for the requested target language
+  const targetDict = UI_DICTIONARY[lang];
+  if (targetDict && targetDict[key]) {
+    return targetDict[key];
   }
-  // Try English fallback
+
+  // 2. Explicit fallback if provided by the component
+  if (fallback !== undefined) {
+    return fallback;
+  }
+
+  // 3. Unified neutral English fallback as last resort (never cross-contaminate with Arabic or another random language)
   if (UI_DICTIONARY.en && UI_DICTIONARY.en[key]) {
     return UI_DICTIONARY.en[key];
   }
-  return fallback !== undefined ? fallback : key;
+
+  return key;
 }
 
 // Multilingual Category Translations
@@ -1513,10 +1623,119 @@ export const LOCALIZED_CONTENT: Record<string, Partial<Record<LanguageCode, { ti
     es: { title: 'Guía Completa de Ingeniería de Prompts: Construyendo Flujos de IA Profesionales', description: 'Domina estrategias prácticas de arquitectura de prompts, orquestación de pensamiento y flujos de trabajo con agentes.' },
     fr: { title: 'Le Playbook Complet d\'Ingénierie de Prompts : Créer des Systèmes IA Efficaces', description: 'Maîtrisez les stratégies concrètes d\'architecture de prompts et d\'orchestration d\'agents en environnement de production.' },
     id: { title: 'Buku Panduan Lengkap Rekayasa Prompt: Membangun Alur Kerja AI Produksi', description: 'Kuasai strategi praktis untuk arsitektur prompt, orkestrasi pemikiran bertingkat, dan agen AI di lingkungan produksi.' }
+  },
+  'p-4': {
+    ar: { title: 'جلسة تصوير كلاسيكية لسيارة رياضية إيطالية', description: 'جماليات مجلات السبعينيات مع سيارة فيراري حمراء تسير على طريق ساحل أمالفي الإيطالي الخلاب.' },
+    en: { title: 'Vintage Editorial Sports Car Shoot', description: '1970s magazine aesthetic featuring a sleek red retro sports car speeding through a scenic Italian coastal highway.' },
+    es: { title: 'Sesión Editorial Vintage de Coche Deportivo', description: 'Estética de revista de los años 70 con un deportivo retro rojo circulando por la costa de Amalfi.' },
+    fr: { title: 'Shooting Éditorial Vintage Voiture de Sport', description: 'Esthétique magazine des années 70 avec une voiture de sport rouge sur la côte amalfitaine.' },
+    id: { title: 'Pemotretan Editorial Mobil Sport Klasik', description: 'Estetika majalah 1970-an menampilkan mobil sport retro merah melaju di pesisir Amalfi Italia.' }
+  },
+  'p-5': {
+    ar: { title: 'قرية منازل الأشجار الإلفية السحرية', description: 'مظلة ساحرة من منازل الشجر المنسوجة في أشجار الخشب الأحمر العملاقة المتوهجة بضياء حيوي ذهبي.' },
+    en: { title: 'Mystical Elven Treehouse Village', description: 'A magical canopy of treehouse dwellings woven into massive ancient redwood trees, shining with golden bioluminescence.' },
+    es: { title: 'Pueblo Élfico Místico en Casas de Árbol', description: 'Un dosel mágico de casas en árboles gigantes de secuoyas milenarias con bioluminiscencia dorada.' },
+    fr: { title: 'Village Féerique Élfique dans les Arbres', description: 'Canopée magique de cabanes nichées dans d\'immenses séquoias anciens scintillants de bioluminescence.' },
+    id: { title: 'Desa Rumah Pohon Elf Mistik', description: 'Kanopi magis rumah pohon yang dijalin ke dalam pohon redwood kuno raksasa dengan bioluminesensi keemasan.' }
+  },
+  'p-6': {
+    ar: { title: 'تصوير إعلاني لمنتجات تجميل طبيعية مينيماليست', description: 'أسلوب إعلاني تجاري راقٍ يعرض عبوات العناية بالبشرة غير اللامعة على أحجار الترافرتين الطبيعية والرمال.' },
+    en: { title: 'Minimalist Matte Cosmetics Product Shot', description: 'High-end commercial advertisement style showcasing organic skincare bottles on natural beige stones.' },
+    es: { title: 'Fotografía Minimalista de Cosméticos Mate', description: 'Estilo publicitario comercial de alta gama con envases cosméticos sobre piedras naturales beige.' },
+    fr: { title: 'Photo Produit Cosmétique Mat Minimaliste', description: 'Photographie publicitaire haut de gamme mettant en valeur des flacons de cosmétiques sur pierre beige.' },
+    id: { title: 'Foto Produk Kosmetik Matte Minimalis', description: 'Gaya fotografi iklan komersial kelas atas menampilkan botol perawatan kulit organik di atas batu travertine alami.' }
+  },
+  'p-7': {
+    ar: { title: 'أشكال هندسية ثلاثية الأبعاد سريالية بألوان الباستيل', description: 'أشكال مجردة ثلاثية الأبعاد متدفقة مع تدرجات لونية ناعمة وخامات قزحية فائقة النقاء للواجهات والخلفيات.' },
+    en: { title: 'Surreal Pastel Abstract 3D Shapes', description: 'Dynamic flowing 3D geometric shapes with soft gradients and iridescent materials, perfect for wallpapers and UI headers.' },
+    es: { title: 'Formas 3D Abstractas y Surrealistas en Tonos Pastel', description: 'Formas geométricas 3D fluidas con degradados suaves y texturas iridiscentes para fondos y UI.' },
+    fr: { title: 'Formes 3D Abstraites Surréalistes aux Tons Pastel', description: 'Formes géométriques 3D fluides avec dégradés doux et matériaux irisés parfaits pour fonds d\'écran.' },
+    id: { title: 'Bentuk 3D Abstrak Surealis Warna Pastel', description: 'Bentuk geometris 3D dinamis yang mengalir dengan gradien lembut dan material warna-warni.' }
+  },
+  'p-8': {
+    ar: { title: 'تصوير مقرب لبيتزا نابولية طازجة من الفرن', description: 'لقطة ماكرو شهية لبيتزا العجين المخمر مع جبنة الموزاريلا الذائبة وصلصة الطماطم وأوراق الريحان الطازجة.' },
+    en: { title: 'Authentic Sourdough Pizza Close-Up', description: 'A steaming hot, fresh gourmet Neapolitan pizza on a rustic wooden board with melting mozzarella and fresh basil leaves.' },
+    es: { title: 'Primer Plano de Auténtica Pizza Napolitana', description: 'Pizza napolitana gourmet recién horneada sobre tabla de madera con mozzarella fundida y albahaca.' },
+    fr: { title: 'Gros Plan sur une Authentique Pizza Napolitaine', description: 'Pizza napolitaine gourmande fumante sur planche en bois rustique avec mozzarella fondante et basilic.' },
+    id: { title: 'Close-Up Pizza Sourdough Neapolitan Otentik', description: 'Pizza Neapolitan gourmet panas mengepul di atas papan kayu pedesaan dengan lelehan keju mozzarella dan daun kemangi segar.' }
+  },
+  's-3': {
+    ar: { title: 'سير عمل البرمجة الذاتية عبر وكيل AntiGravity', description: 'بروتوكول تفويض المهام متعدد الحلقات لتوجيه وكلاء الذكاء الاصطناعي لكتابة واختبار وتصحيح الكود ذاتياً.' },
+    en: { title: 'AntiGravity Autonomous Coding Workflow', description: 'Multi-agent self-correcting blueprint enabling autonomous feature generation, test writing, and bug fixing.' },
+    es: { title: 'Flujo de Programación Autónoma con AntiGravity', description: 'Protocolo de agentes autónomos para generar código, escribir pruebas y corregir errores automáticamente.' },
+    fr: { title: 'Workflow de Codage Autonome AntiGravity', description: 'Protocole multi-agents auto-correcteur permettant la génération autonome de code et la résolution de bugs.' },
+    id: { title: 'Alur Kerja Pemrograman Otonom AntiGravity', description: 'Cetak biru multi-agen yang mengoreksi diri untuk pembuatan fitur mandiri, pengujian kode, dan perbaikan bug.' }
+  },
+  's-4': {
+    ar: { title: 'محرك البحث العميق واستخراج المعرفة الأكاديمية', description: 'مهارة أوامر متقدمة لتحليل مئات المصادر وتلخيص الأوراق العلمية وصياغة تقارير استراتيجية شاملة.' },
+    en: { title: 'Deep Research & Knowledge Extraction Engine', description: 'Advanced multi-model prompting skill to synthesize complex research papers, extract data, and compile executive briefs.' },
+    es: { title: 'Motor de Investigación Profunda y Extracción de Conocimiento', description: 'Habilidad de prompts para sintetizar investigaciones complejas, extraer datos y redactar informes ejecutivos.' },
+    fr: { title: 'Moteur de Recherche Approfondie et Synthèse', description: 'Compétence de prompting avancée pour synthétiser des articles de recherche et compiler des synthèses exécutives.' },
+    id: { title: 'Mesin Riset Mendalam & Ekstraksi Pengetahuan', description: 'Keahlian prompt tingkat lanjut untuk mensintesis dokumen riset kompleks dan menyusun laporan eksekutif.' }
+  },
+  'v-3': {
+    ar: { title: 'سلسلة المسافر عبر الزمن والألغاز التاريخية', description: 'صيغة سينمائية لفيديوهات يوتيوب شورتس تستعرض أحداثاً غامضة من الماضي بصور Runway وMidjourney.' },
+    en: { title: 'AI Time Traveler Historical Mysteries', description: 'High-RPM storytelling blueprint using Runway Gen-3 and Midjourney to create immersive first-person time travel videos.' },
+    es: { title: 'Misterios Históricos del Viajero del Tiempo con IA', description: 'Guía de video de alta retención usando Runway y Midjourney para narrar misterios del pasado en primera persona.' },
+    fr: { title: 'Mystères Historiques du Voyageur Temporel IA', description: 'Blueprint de narration immersif utilisant Runway Gen-3 et Midjourney pour explorer des énigmes historiques.' },
+    id: { title: 'Misteri Sejarah Penjelajah Waktu AI', description: 'Cetak biru video berpendapatan tinggi menggunakan Runway Gen-3 dan Midjourney untuk membuat video perjalanan waktu yang imersif.' }
+  },
+  'v-4': {
+    ar: { title: 'مشاريع المليارديرات العملاقة واليخوت الفاخرة', description: 'مخطط فيديو فيروسي عالي الأرباح يستهدف جمهور المال والأعمال بمرئيات مذهلة ونصوص مشوقة.' },
+    en: { title: 'Luxury Billionaire Megaprojects & Superyachts', description: 'High-ticket viral finance and luxury blueprint exploring conceptual yachts and futuristic architectural megaprojects.' },
+    es: { title: 'Megaproyectos de Lujo de Multimillonarios y Superyates', description: 'Guía viral para nicho de alto RPM sobre yates conceptuales y arquitectura futurista de hiperlujo.' },
+    fr: { title: 'Mégaprojets et Superyachts des Milliardaires', description: 'Blueprint viral à fort RPM explorant les yachts d\'exception et les mégaprojets architecturaux futuristes.' },
+    id: { title: 'Megaproyek Mewah Miliarder & Kapal Pesiar Super', description: 'Cetak biru video viral niche kemewahan dengan RPM tinggi membahas kapal pesiar dan megaproyek arsitektur futuristik.' }
+  },
+  'b-2': {
+    ar: { title: 'كيف تبني وتخصص ملفات .cursorrules للبرمجة الذكية', description: 'توقف عن تكرار تفضيلاتك البرمجية. تعلم كيف تصيغ ملف تعليمات يجعل Cursor وWindsurf يكتبان كوداً مثالياً.' },
+    en: { title: 'How to Build and Optimize Custom .cursorrules for AI Assisted Coding', description: 'Stop explaining your coding preferences repeatedly. Learn how to draft a powerful system instruction file that makes Cursor and Windsurf code flawlessly.' },
+    es: { title: 'Cómo Crear y Optimizar Archivos .cursorrules para Programar con IA', description: 'Aprende a redactar un archivo de instrucciones de sistema para que Cursor y Windsurf generen código limpio y seguro.' },
+    fr: { title: 'Comment Créer et Optimiser des Fichiers .cursorrules pour Coder avec l\'IA', description: 'Apprenez à rédiger un fichier d\'instructions système puissant pour que Cursor et Windsurf codent à la perfection.' },
+    id: { title: 'Cara Membuat dan Mengoptimalkan File .cursorrules untuk Coding dengan AI', description: 'Pelajari cara menyusun berkas instruksi sistem yang kuat agar Cursor dan Windsurf dapat menulis kode tanpa cela.' }
+  },
+  'b-3': {
+    ar: { title: 'احتراف Runway Gen-3: التحكم بحركة الكاميرا وفيزياء المشاهد', description: 'دليل عملي لفهم أوامر التحريك وزوايا التصوير لتوليد مقاطع فيديو سينمائية بدون تشوهات بصرية.' },
+    en: { title: 'Mastering Runway Gen-3 Alpha: Cinematic Camera Controls and Motion Physics', description: 'A hands-on breakdown of prompt structures, camera angles, and motion physics for defect-free generative video.' },
+    es: { title: 'Dominando Runway Gen-3 Alpha: Controles de Cámara y Física de Movimiento', description: 'Guía práctica para entender la estructura de prompts de video, movimientos de cámara y física visual.' },
+    fr: { title: 'Maîtriser Runway Gen-3 Alpha : Contrôles de Caméra et Physique du Mouvement', description: 'Guide pratique pour maîtriser les angles de caméra, le mouvement et la génération vidéo sans défaut.' },
+    id: { title: 'Menguasai Runway Gen-3 Alpha: Kontrol Kamera Sinematik & Fisika Gerak', description: 'Panduan praktis struktur prompt video, sudut kamera, dan fisika gerakan untuk hasil video bebas cacat.' }
+  },
+  'b-4': {
+    ar: { title: 'السيو البرمجي بالذكاء الاصطناعي: من الصفر إلى 100 ألف زائر شهرياً', description: 'استراتيجيات بناء صفحات هبوط ديناميكية وتوليد محتوى عالي القيمة متوافق مع خوارزميات محركات البحث.' },
+    en: { title: 'Programmatic SEO with AI: Scaling from Zero to 100k Monthly Visitors', description: 'Actionable strategies for building dynamic landing page engines, structured data feeds, and search-ranking content at scale.' },
+    es: { title: 'SEO Programático con IA: Escalando de Cero a 100k Visitas Mensuales', description: 'Estrategias prácticas para construir páginas de aterrizaje dinámicas y contenido de alto valor posicionado en Google.' },
+    fr: { title: 'SEO Programmatique avec l\'IA : Passer de 0 à 100k Visiteurs Mensuels', description: 'Stratégies concrètes pour créer des moteurs de pages d\'atterrissage dynamiques et se positionner sur Google.' },
+    id: { title: 'SEO Terprogram dengan AI: Meningkatkan Skala dari Nol ke 100rb Pengunjung Bulanan', description: 'Strategi praktis membangun halaman arahan dinamis dan konten berkualitas tinggi yang menduduki peringkat atas mesin pencari.' }
   }
 };
 
 export function getLocalizedItem<T extends { id: string; title: string; description?: string }>(item: T, lang: LanguageCode): T {
+  if (!item) return item;
+  const anyItem = item as any;
+
+  // 1. Dynamic DB fields matching current locale (e.g. title_en, title_ar, title_es, title_id, title_fr)
+  const dbTitle = anyItem[`title_${lang}`];
+  const dbDesc = anyItem[`description_${lang}`] ?? anyItem[`desc_${lang}`];
+  if (dbTitle) {
+    return {
+      ...item,
+      title: dbTitle,
+      description: dbDesc !== undefined ? dbDesc : item.description
+    };
+  }
+
+  // 2. Dynamic JSON translations object from Supabase (e.g. item.translations.es)
+  if (anyItem.translations && anyItem.translations[lang]) {
+    const tLoc = anyItem.translations[lang];
+    return {
+      ...item,
+      title: tLoc.title || item.title,
+      description: tLoc.description !== undefined ? tLoc.description : item.description
+    };
+  }
+
+  // 3. Static LOCALIZED_CONTENT map for current locale
   const translations = LOCALIZED_CONTENT[item.id];
   if (translations && translations[lang]) {
     const loc = translations[lang]!;
@@ -1526,6 +1745,17 @@ export function getLocalizedItem<T extends { id: string; title: string; descript
       description: loc.description !== undefined ? loc.description : item.description
     };
   }
+
+  // 4. Fallback to English (if item has English localized content) to prevent raw default DB language leaks
+  if (lang !== 'en' && translations && translations.en) {
+    const loc = translations.en!;
+    return {
+      ...item,
+      title: loc.title || item.title,
+      description: loc.description !== undefined ? loc.description : item.description
+    };
+  }
+
   return item;
 }
 
@@ -1607,3 +1837,7 @@ export function validateHreflangs(pages: Array<{
 
   return issues;
 }
+
+export { useI18n } from '../hooks/useI18n';
+export { useActiveLanguage } from '../hooks/useActiveLanguage';
+

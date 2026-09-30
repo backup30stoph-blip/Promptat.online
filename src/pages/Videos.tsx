@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useSeoMetadata } from '../hooks/useSeoMetadata';
 import { AdSlot } from '../components/AdSlot';
-import { getLocalizedItem } from '../lib/i18n';
+import { getLocalizedItem, useI18n } from '../lib/i18n';
 
 export const Videos: React.FC = () => {
   const { 
@@ -25,12 +25,11 @@ export const Videos: React.FC = () => {
     showNotification,
     searchQuery,
     setSearchQuery,
-    currentLang,
-    t,
-    isRtl,
     toggleBookmark,
     toggleLike
   } = useApp();
+
+  const { lang, isRtl, t } = useI18n();
 
   const [selectedModel, setSelectedModel] = useState<string>('all');
   const [selectedMotion, setSelectedMotion] = useState<string>('all');
@@ -70,15 +69,15 @@ export const Videos: React.FC = () => {
     }
 
     return {
-      title: currentLang === 'ar'
+      title: lang === 'ar'
         ? 'برومبتات الفيديو بالذكاء الاصطناعي وأوامر سينمائية | Promptat Online'
         : 'AI Video Prompts, Camera Motion & Generator Blueprints | Promptat Online',
-      description: currentLang === 'ar'
+      description: lang === 'ar'
         ? 'مكتبة برومبتات الفيديو الاحترافية لتوليد مشاهد سينمائية عبر Runway Gen-3, OpenAI Sora, Kling AI, Luma Dream Machine, و Pika Labs مع تحكم كامل بالكاميرا.'
         : 'Discover cinematic AI video prompts, camera movements, motion settings, and generator templates for Runway Gen-3, OpenAI Sora, Kling AI, and Luma Dream Machine.',
       robots: 'index, follow'
     };
-  }, [currentVideoForSeo, currentLang]);
+  }, [currentVideoForSeo, lang]);
 
   useSeoMetadata(seoOptions);
 
@@ -107,7 +106,7 @@ export const Videos: React.FC = () => {
     if (navigator.clipboard) {
       navigator.clipboard.writeText(text);
       setCopiedSection(label);
-      showNotification(t('copiedPromptSuccess', 'تم نسخ البرومبت بنجاح!'), 'success');
+      showNotification(t('copiedPromptSuccess', lang), 'success');
       setTimeout(() => setCopiedSection(null), 2000);
     }
   };
@@ -122,7 +121,7 @@ export const Videos: React.FC = () => {
       return <PageNotFound type="general" />;
     }
 
-    const localized = getLocalizedItem(video, currentLang);
+    const localized = getLocalizedItem(video, lang);
     const isBookmarked = state.bookmarks.videos.includes(video.id);
     const isLiked = state.likes.videos.includes(video.id);
 
@@ -140,7 +139,7 @@ export const Videos: React.FC = () => {
             className="mb-6 inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2 text-xs font-bold text-slate-700 border border-slate-200 shadow-2xs hover:bg-slate-50 cursor-pointer"
           >
             <ArrowLeft className={`h-4 w-4 ${isRtl ? 'rotate-180' : ''}`} />
-            <span>{t('backToVideoPrompts', 'العودة إلى برومبتات الفيديو')}</span>
+            <span>{t('backToVideoPrompts', lang)}</span>
           </button>
 
           {/* Main Hero Card */}
@@ -196,7 +195,7 @@ export const Videos: React.FC = () => {
                     }`}
                   >
                     <Bookmark className={`h-4 w-4 ${isBookmarked ? 'fill-white' : ''}`} />
-                    <span>{isBookmarked ? t('saved', 'محفوظ') : t('save', 'حفظ')}</span>
+                    <span>{isBookmarked ? t('saved', lang) : t('save', lang)}</span>
                   </button>
                 </div>
               </div>
@@ -211,7 +210,7 @@ export const Videos: React.FC = () => {
                   <div className="flex items-center gap-2">
                     <Sparkles className="h-5 w-5 text-[#e21833]" />
                     <h3 className="text-sm font-black text-slate-900 uppercase tracking-wider">
-                      {t('primaryVideoPrompt', 'برومبت الفيديو الأساسي')}
+                      {t('primaryVideoPrompt', lang)}
                     </h3>
                   </div>
 
@@ -223,12 +222,12 @@ export const Videos: React.FC = () => {
                     {copiedSection === 'main_prompt' ? (
                       <>
                         <Check className="h-4 w-4" />
-                        <span>{t('copied', 'تم النسخ!')}</span>
+                        <span>{t('copied', lang)}</span>
                       </>
                     ) : (
                       <>
                         <Copy className="h-4 w-4" />
-                        <span>{t('copyFullPrompt', 'نسخ البرومبت بالكامل')}</span>
+                        <span>{t('copyFullPrompt', lang)}</span>
                       </>
                     )}
                   </button>
@@ -245,7 +244,7 @@ export const Videos: React.FC = () => {
                 {/* Motion Slider */}
                 <div className="space-y-1.5">
                   <div className="flex justify-between text-xs font-bold text-slate-700">
-                    <span>{t('motionIntensity', 'قوة حركة الفيديو (Motion)')}</span>
+                    <span>{t('motionIntensity', lang)}</span>
                     <span className="text-[#e21833] font-mono">{customMotion}/10</span>
                   </div>
                   <input
@@ -256,13 +255,13 @@ export const Videos: React.FC = () => {
                     onChange={(e) => setCustomMotion(Number(e.target.value))}
                     className="w-full accent-[#e21833] cursor-pointer"
                   />
-                  <p className="text-[10px] text-slate-400">1 = حركة بطيئة ناعمة • 10 = حركة سريعة وسينمائية</p>
+                  <p className="text-[10px] text-slate-400">{t('motionHint', lang)}</p>
                 </div>
 
                 {/* Aspect Ratio */}
                 <div className="space-y-1.5">
                   <label className="block text-xs font-bold text-slate-700">
-                    {t('aspectRatio', 'الأبعاد (Aspect Ratio)')}
+                    {t('aspectRatio', lang)}
                   </label>
                   <select
                     value={customAspect}
@@ -279,7 +278,7 @@ export const Videos: React.FC = () => {
                 {/* Camera Path */}
                 <div className="space-y-1.5">
                   <label className="block text-xs font-bold text-slate-700">
-                    {t('cameraMovement', 'حركة الكاميرا (Camera Motion)')}
+                    {t('cameraMovement', lang)}
                   </label>
                   <select
                     value={customCamera}
@@ -304,7 +303,7 @@ export const Videos: React.FC = () => {
                 <div className="space-y-3">
                   <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                     <Video className="h-4 w-4 text-[#e21833]" />
-                    <span>{t('supportedGenerators', 'محركات التوليد المدعومة')}</span>
+                    <span>{t('supportedGenerators', lang)}</span>
                   </h4>
                   <div className="flex flex-wrap gap-2">
                     {video.ai_tools_needed.map((tool, idx) => (
@@ -322,15 +321,15 @@ export const Videos: React.FC = () => {
                 <div className="space-y-3">
                   <h4 className="text-xs font-black uppercase tracking-wider text-slate-700 flex items-center gap-1.5">
                     <Layers className="h-4 w-4 text-[#e21833]" />
-                    <span>{t('shotDetails', 'مواصفات المشهد')}</span>
+                    <span>{t('shotDetails', lang)}</span>
                   </h4>
                   <div className="space-y-1.5 text-xs text-slate-600">
                     <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="font-semibold text-slate-400">{t('resolution', 'الدقة')}:</span>
+                      <span className="font-semibold text-slate-400">{t('resolution', lang)}:</span>
                       <span className="font-bold text-slate-800">4K Ultra HD 60fps</span>
                     </div>
                     <div className="flex justify-between py-1 border-b border-slate-100">
-                      <span className="font-semibold text-slate-400">{t('lighting', 'الإضاءة')}:</span>
+                      <span className="font-semibold text-slate-400">{t('lighting', lang)}:</span>
                       <span className="font-bold text-slate-800">Volumetric Studio Cinematic</span>
                     </div>
                   </div>
@@ -364,15 +363,15 @@ export const Videos: React.FC = () => {
           <div className="relative z-10 max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-red-200 border border-white/15 backdrop-blur-xs mb-4">
               <Film className="h-4 w-4 text-red-400" />
-              <span>{currentLang === 'ar' ? 'مكتبة برومبتات الفيديو السينمائية' : 'Cinematic Video Generation Prompts'}</span>
+              <span>{lang === 'ar' ? 'مكتبة برومبتات الفيديو السينمائية' : 'Cinematic Video Generation Prompts'}</span>
             </div>
             
             <h1 className="font-display text-2xl sm:text-4xl font-black tracking-tight text-white mb-3">
-              {currentLang === 'ar' ? 'برومبتات الفيديو بالذكاء الاصطناعي' : 'AI Video Prompts & Motion Blueprints'}
+              {lang === 'ar' ? 'برومبتات الفيديو بالذكاء الاصطناعي' : 'AI Video Prompts & Motion Blueprints'}
             </h1>
             
             <p className="text-xs sm:text-sm text-slate-200 leading-relaxed max-w-2xl">
-              {currentLang === 'ar'
+              {lang === 'ar'
                 ? 'أوامر احترافية ومخططات سينمائية جاهزة لتوليد فيديوهات فائقة الواقعية عبر Runway Gen-3, OpenAI Sora, Kling AI, Luma Dream Machine, و Pika Labs مع تحكم دقيق بحركة الكاميرا والإضاءة.'
                 : 'Curated prompts, motion vectors, and cinematic scene descriptors engineered for Runway Gen-3, Sora, Kling 1.5, and Luma Dream Machine with granular camera control.'}
             </p>
@@ -387,7 +386,7 @@ export const Videos: React.FC = () => {
           {/* AI Generator Model Filter */}
           <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 scrollbar-none">
             {[
-              { id: 'all', label: currentLang === 'ar' ? 'جميع النماذج' : 'All Models' },
+              { id: 'all', label: t('allModels', lang) },
               { id: 'runway', label: 'Runway Gen-3' },
               { id: 'kling', label: 'Kling AI' },
               { id: 'sora', label: 'OpenAI Sora' },
@@ -415,7 +414,7 @@ export const Videos: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={currentLang === 'ar' ? 'ابحث في برومبتات الفيديو...' : 'Search video prompts...'}
+              placeholder={t('searchVideoPromptsPlaceholder', lang)}
               className="w-full rounded-xl border border-slate-200 bg-white py-2.5 ps-10 pe-4 text-xs font-medium text-slate-800 placeholder-slate-400 focus:border-[#e21833] focus:ring-1 focus:ring-[#e21833] focus:outline-none shadow-xs"
             />
             <Film className="absolute start-3.5 top-3 h-4 w-4 text-slate-400" />
@@ -434,10 +433,10 @@ export const Videos: React.FC = () => {
           <div className="rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-xs">
             <Video className="mx-auto h-12 w-12 text-slate-300 mb-3" />
             <h3 className="text-base font-bold text-slate-800 mb-1">
-              {currentLang === 'ar' ? 'لم يتم العثور على برومبتات فيديو' : 'No video prompts found'}
+              {t('noVideoPromptsFound', lang)}
             </h3>
             <p className="text-xs text-slate-500">
-              {currentLang === 'ar' ? 'جرب البحث بكلمات مختلفة أو إزالة الفلاتر.' : 'Try adjusting your search terms or selecting a different model filter.'}
+              {t('noVideoPromptsFoundDesc', lang)}
             </p>
           </div>
         ) : (

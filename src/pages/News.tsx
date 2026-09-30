@@ -1,5 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
+import { useI18n } from '../hooks/useI18n';
 import { AI_NEWS_ITEMS, AINewsItem } from '../data/news';
 import { 
   Newspaper, Sparkles, Flame, Clock, Eye, Heart, Share2, 
@@ -11,37 +12,95 @@ import { MarkdownRenderer } from '../components/MarkdownRenderer';
 import { stripMarkdown } from '../utils/textUtils';
 
 export const News: React.FC = () => {
-  const { currentLang, t, isRtl, showNotification, searchQuery, setSearchQuery } = useApp();
+  const { showNotification, searchQuery, setSearchQuery } = useApp();
+  const { lang, t, isRtl } = useI18n();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedNews, setSelectedNews] = useState<AINewsItem | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
-  const seoTitle = currentLang === 'ar' 
-    ? 'أخبار الذكاء الاصطناعي والتحديثات اليومية | Promptat Online'
-    : 'AI News, Model Releases & Tech Insights | Promptat Online';
+  const seoContent = {
+    ar: {
+      title: 'أخبار الذكاء الاصطناعي والتحديثات اليومية | Promptat Online',
+      desc: 'تابع أحدث أخبار الذكاء الاصطناعي، إطلاقات النماذج اللغوية، أدوات الفيديو وتوليد الصور، وتطورات التقنية لحظة بلحظة.'
+    },
+    en: {
+      title: 'AI News, Frontier Model Releases & Intelligence | Promptat Online',
+      desc: 'Stay informed with real-time AI news, LLM updates, video generation tools, image models, and cutting-edge tech breakthroughs.'
+    },
+    es: {
+      title: 'Noticias y Actualizaciones de Inteligencia Artificial | Promptat Online',
+      desc: 'Últimas noticias de IA, lanzamientos de modelos de lenguaje, herramientas de video e imagen en tiempo real.'
+    },
+    id: {
+      title: 'Berita AI Terkini & Peluncuran Model | Promptat Online',
+      desc: 'Ikuti berita terkini kecerdasan buatan, rilis model bahasa, alat video dan pembuatan gambar AI real-time.'
+    },
+    fr: {
+      title: 'Actualités et Nouveautés sur l\'Intelligence Artificielle | Promptat Online',
+      desc: 'Suivez les dernières actualités IA, sorties de modèles (GPT, Claude, Sora, Runway, Flux) et innovations en direct.'
+    }
+  };
 
-  const seoDescription = currentLang === 'ar'
-    ? 'تابع أحدث أخبار الذكاء الاصطناعي، إطلاقات النماذج اللغوية، أدوات الفيديو وتوليد الصور، وتطورات التقنية لحظة بلحظة.'
-    : 'Stay informed with the latest breaking AI news, LLM updates, video generation tools, image models, and cutting-edge tech breakthroughs.';
+  const seoData = seoContent[lang] || seoContent.ar;
 
   useSeoMetadata({
-    title: seoTitle,
-    description: seoDescription,
+    title: seoData.title,
+    description: seoData.desc,
     robots: 'index, follow'
   });
 
-  const categories = [
-    { id: 'all', label: currentLang === 'ar' ? 'الكل' : 'All Updates' },
-    { id: 'video', label: currentLang === 'ar' ? 'ذكاء الفيديو' : 'Video AI' },
-    { id: 'models', label: currentLang === 'ar' ? 'النماذج اللغوية' : 'LLMs & Reasoning' },
-    { id: 'image', label: currentLang === 'ar' ? 'توليد الصور' : 'Image Gen' },
-    { id: 'opensource', label: currentLang === 'ar' ? 'المصادر المفتوحة' : 'Open Source' },
-  ];
+  const categories = useMemo(() => {
+    const labelsMap: Record<string, Record<string, string>> = {
+      all: { ar: 'الكل', en: 'All Updates', es: 'Todas', id: 'Semua', fr: 'Tout' },
+      video: { ar: 'ذكاء الفيديو', en: 'Video AI', es: 'Video IA', id: 'Video AI', fr: 'Vidéo IA' },
+      models: { ar: 'النماذج اللغوية', en: 'LLMs & Reasoning', es: 'Modelos LLM', id: 'Model LLM', fr: 'Modèles LLM' },
+      image: { ar: 'توليد الصور', en: 'Image Gen', es: 'Generación de Imágenes', id: 'Generasi Gambar', fr: 'Génération d\'Images' },
+      opensource: { ar: 'المصادر المفتوحة', en: 'Open Source', es: 'Código Abierto', id: 'Sumber Terbuka', fr: 'Open Source' }
+    };
+    return [
+      { id: 'all', label: labelsMap.all[lang] || labelsMap.all.en },
+      { id: 'video', label: labelsMap.video[lang] || labelsMap.video.en },
+      { id: 'models', label: labelsMap.models[lang] || labelsMap.models.en },
+      { id: 'image', label: labelsMap.image[lang] || labelsMap.image.en },
+      { id: 'opensource', label: labelsMap.opensource[lang] || labelsMap.opensource.en },
+    ];
+  }, [lang]);
+
+  const heroContent = useMemo(() => {
+    const map = {
+      ar: {
+        badge: 'تغطية حية وشاملة',
+        title: 'أخبار الذكاء الاصطناعي',
+        desc: 'آخر التحديثات، إطلاقات النماذج الثورية (GPT, Claude, Sora, Runway, Flux)، وتغطية شاملة لأحدث أدوات وتقنيات الذكاء الاصطناعي.'
+      },
+      en: {
+        badge: 'Live AI Intelligence Feed',
+        title: 'AI News & Insights',
+        desc: 'Real-time updates, frontier model releases (GPT, Claude, Sora, Runway, Flux), and in-depth analysis on breakthroughs shaping creator workflows.'
+      },
+      es: {
+        badge: 'Noticias de IA en Vivo',
+        title: 'Noticias y Tendencias de IA',
+        desc: 'Actualizaciones en tiempo real, lanzamientos de modelos pioneros (GPT, Claude, Sora, Runway, Flux) y análisis sobre avances en IA.'
+      },
+      id: {
+        badge: 'Pembaruan AI Langsung',
+        title: 'Berita & Wawasan AI',
+        desc: 'Pembaruan terkini secara real-time, rilis model terdepan (GPT, Claude, Sora, Runway, Flux), dan analisis mendalam tentang inovasi AI.'
+      },
+      fr: {
+        badge: 'Flux d\'Actualités IA en Direct',
+        title: 'Actualités & Tendances IA',
+        desc: 'Mises à jour en direct, sorties de modèles de pointe (GPT, Claude, Sora, Runway, Flux) et analyses complètes sur l\'intelligence artificielle.'
+      }
+    };
+    return map[lang] || map.ar;
+  }, [lang]);
 
   const filteredNews = useMemo(() => {
     return AI_NEWS_ITEMS.filter((item) => {
-      const titleText = currentLang === 'ar' ? item.title_ar : item.title;
-      const excerptText = currentLang === 'ar' ? item.excerpt_ar : item.excerpt;
+      const titleText = lang === 'ar' ? item.title_ar : item.title;
+      const excerptText = lang === 'ar' ? item.excerpt_ar : item.excerpt;
 
       const matchesSearch = searchQuery.trim()
         ? titleText.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -53,14 +112,14 @@ export const News: React.FC = () => {
 
       return matchesSearch && matchesCategory;
     });
-  }, [searchQuery, selectedCategory, currentLang]);
+  }, [searchQuery, selectedCategory, lang]);
 
   const handleShare = (item: AINewsItem) => {
     const url = window.location.href;
     if (navigator.clipboard) {
       navigator.clipboard.writeText(url);
       setCopiedId(item.id);
-      showNotification(t('copiedShareLink', 'تم نسخ رابط الخبر!'), 'success');
+      showNotification(t('copiedShareLink', lang, 'تم نسخ رابط الخبر!'), 'success');
       setTimeout(() => setCopiedId(null), 2000);
     }
   };
@@ -74,15 +133,13 @@ export const News: React.FC = () => {
           <div className="relative z-10 max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-bold text-red-200 border border-white/15 backdrop-blur-xs mb-4">
               <Flame className="h-4 w-4 text-amber-400 animate-pulse" />
-              <span>{currentLang === 'ar' ? 'تغطية حية وشاملة' : 'Live AI Intelligence Feed'}</span>
+              <span>{heroContent.badge}</span>
             </div>
             <h1 className="font-display text-2xl sm:text-4xl font-black tracking-tight text-white mb-3">
-              {currentLang === 'ar' ? 'أخبار الذكاء الاصطناعي' : 'AI News & Insights'}
+              {heroContent.title}
             </h1>
             <p className="text-xs sm:text-sm text-slate-200 leading-relaxed max-w-2xl">
-              {currentLang === 'ar' 
-                ? 'آخر التحديثات، إطلاقات النماذج الثورية (GPT, Claude, Sora, Runway, Flux)، وتغطية شاملة لأحدث أدوات وتقنيات الذكاء الاصطناعي.'
-                : 'Real-time updates, frontier model releases (GPT, Claude, Sora, Runway, Flux), and in-depth analysis on breakthroughs shaping creator workflows.'}
+              {heroContent.desc}
             </p>
           </div>
 
@@ -116,7 +173,7 @@ export const News: React.FC = () => {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={currentLang === 'ar' ? 'ابحث في الأخبار والتحديثات...' : 'Search news & updates...'}
+              placeholder={lang === 'ar' ? 'ابحث في الأخبار والتحديثات...' : 'Search news & updates...'}
               className="w-full rounded-xl border border-slate-200 bg-white py-2.5 ps-10 pe-4 text-xs font-medium text-slate-800 placeholder-slate-400 focus:border-[#e21833] focus:ring-1 focus:ring-[#e21833] focus:outline-none shadow-xs"
             />
             <Search className="absolute start-3.5 top-3 h-4 w-4 text-slate-400" />
@@ -128,18 +185,18 @@ export const News: React.FC = () => {
           <div className="rounded-3xl border border-slate-200 bg-white p-12 text-center shadow-xs">
             <Newspaper className="mx-auto h-12 w-12 text-slate-300 mb-3" />
             <h3 className="text-base font-bold text-slate-800 mb-1">
-              {currentLang === 'ar' ? 'لم يتم العثور على أخبار' : 'No news found'}
+              {lang === 'ar' ? 'لم يتم العثور على أخبار' : 'No news found'}
             </h3>
             <p className="text-xs text-slate-500">
-              {currentLang === 'ar' ? 'جرب البحث بكلمات أخرى أو اختر تصنيفاً مختلفاً.' : 'Try adjusting your search query or selecting a different category.'}
+              {lang === 'ar' ? 'جرب البحث بكلمات أخرى أو اختر تصنيفاً مختلفاً.' : 'Try adjusting your search query or selecting a different category.'}
             </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredNews.map((item) => {
-              const title = currentLang === 'ar' ? item.title_ar : item.title;
-              const excerpt = currentLang === 'ar' ? item.excerpt_ar : item.excerpt;
-              const catLabel = currentLang === 'ar' ? item.category_label_ar : item.category_label;
+              const title = lang === 'ar' ? item.title_ar : item.title;
+              const excerpt = lang === 'ar' ? item.excerpt_ar : item.excerpt;
+              const catLabel = lang === 'ar' ? item.category_label_ar : item.category_label;
 
               return (
                 <article
@@ -160,7 +217,7 @@ export const News: React.FC = () => {
                       </span>
                       {item.is_breaking && (
                         <span className="rounded-lg bg-[#e21833] px-2.5 py-1 text-[10px] font-black text-white shadow-xs animate-pulse">
-                          {currentLang === 'ar' ? 'عاجل' : 'Breaking'}
+                          {lang === 'ar' ? 'عاجل' : 'Breaking'}
                         </span>
                       )}
                     </div>
@@ -207,7 +264,7 @@ export const News: React.FC = () => {
                         onClick={() => setSelectedNews(item)}
                         className="inline-flex items-center gap-1 text-xs font-bold text-[#e21833] hover:underline cursor-pointer"
                       >
-                        <span>{currentLang === 'ar' ? 'قراءة التفاصيل' : 'Read Full Story'}</span>
+                        <span>{t('viewDetails', lang, lang === 'ar' ? 'قراءة التفاصيل' : lang === 'es' ? 'Leer Noticia' : lang === 'id' ? 'Baca Selengkapnya' : lang === 'fr' ? 'Lire la Suite' : 'Read Full Story')}</span>
                         <ArrowRight className={`h-3.5 w-3.5 ${isRtl ? 'rotate-180' : ''}`} />
                       </button>
 
@@ -215,7 +272,7 @@ export const News: React.FC = () => {
                         type="button"
                         onClick={() => handleShare(item)}
                         className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors cursor-pointer"
-                        title={currentLang === 'ar' ? 'مشاركة' : 'Share'}
+                        title={t('share', lang, lang === 'ar' ? 'مشاركة' : lang === 'es' ? 'Compartir' : lang === 'id' ? 'Bagikan' : lang === 'fr' ? 'Partager' : 'Share')}
                       >
                         {copiedId === item.id ? (
                           <Check className="h-4 w-4 text-emerald-600" />
@@ -245,7 +302,7 @@ export const News: React.FC = () => {
             <div className="relative h-56 sm:h-64 w-full shrink-0 bg-slate-900">
               <img
                 src={selectedNews.cover}
-                alt={currentLang === 'ar' ? selectedNews.title_ar : selectedNews.title}
+                alt={lang === 'ar' ? selectedNews.title_ar : selectedNews.title}
                 className="h-full w-full object-cover opacity-90"
               />
               <button
@@ -257,7 +314,7 @@ export const News: React.FC = () => {
               </button>
               <div className="absolute bottom-4 start-4 flex items-center gap-2">
                 <span className="rounded-lg bg-[#e21833] px-3 py-1 text-xs font-bold text-white shadow-sm">
-                  {currentLang === 'ar' ? selectedNews.category_label_ar : selectedNews.category_label}
+                  {lang === 'ar' ? selectedNews.category_label_ar : selectedNews.category_label}
                 </span>
                 <span className="rounded-lg bg-black/60 px-3 py-1 text-xs font-semibold text-slate-200 backdrop-blur-md">
                   {selectedNews.source}
@@ -268,11 +325,11 @@ export const News: React.FC = () => {
             {/* Modal Body */}
             <div className="overflow-y-auto p-6 space-y-4">
               <h2 className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
-                {stripMarkdown(currentLang === 'ar' ? selectedNews.title_ar : selectedNews.title)}
+                {stripMarkdown(lang === 'ar' ? selectedNews.title_ar : selectedNews.title)}
               </h2>
 
               <MarkdownRenderer 
-                content={currentLang === 'ar' ? selectedNews.content_ar : selectedNews.content}
+                content={lang === 'ar' ? selectedNews.content_ar : selectedNews.content}
                 className="text-xs sm:text-sm"
               />
 

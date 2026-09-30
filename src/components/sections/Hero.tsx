@@ -19,13 +19,6 @@ export const Hero: React.FC = () => {
 
   return (
     <div className="relative overflow-hidden bg-slate-50/70 py-16 md:py-24 border-b border-slate-100">
-      {/* Background radial highlight */}
-      <div className="absolute inset-x-0 top-0 -z-10 flex justify-center overflow-hidden pointer-events-none">
-        <div className="flex w-[1080px] justify-end">
-          <div className="h-[400px] w-[600px] flex-none rounded-full bg-red-500/5 blur-[120px]"></div>
-        </div>
-      </div>
-
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-4xl mx-auto space-y-6">
           

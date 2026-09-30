@@ -1,7 +1,7 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
 import { CATEGORIES, getColorClasses } from '../data/categories';
-import { getLocalizedCategoryTitle } from '../lib/i18n';
+import { getLocalizedCategoryTitle, getPageSeoMetadata, useI18n } from '../lib/i18n';
 import { Hero } from '../components/sections/Hero';
 import { PromptCard } from '../components/cards/PromptCard';
 import { SkillCard } from '../components/cards/SkillCard';
@@ -25,11 +25,13 @@ const iconMap: Record<string, React.ComponentType<any>> = {
 };
 
 export const Home: React.FC = () => {
-  const { prompts, skills, videos, blogs, navigateTo, setSearchQuery, currentLang, t, isRtl } = useApp();
+  const { prompts, skills, videos, blogs, navigateTo, setSearchQuery, isRtl } = useApp();
+  const { lang, t } = useI18n();
 
+  const homeSeo = getPageSeoMetadata('home', lang);
   useSeoMetadata({
-    title: t('heroBadge', 'برومبتات أونلاين | Promptat Online - أحدث أوامر ومخططات الذكاء الاصطناعي'),
-    description: t('heroSubtitle', 'المكتبة الشاملة لأوامر ومخططات الذكاء الاصطناعي، نماذج صور Midjourney، ومهارات التطوير والتسويق الرقمي.'),
+    title: homeSeo.title,
+    description: homeSeo.description,
     robots: 'index, follow'
   });
 
@@ -55,11 +57,6 @@ export const Home: React.FC = () => {
   return (
     <div className="space-y-16 pb-16 bg-[#fafafa]">
       
-      {/* Home Header Banner Ad */}
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 mt-6">
-        <AdSlot placement="header-banner" pageType="home" />
-      </div>
-
       {/* Hero Header */}
       <Hero />
 
@@ -68,10 +65,10 @@ export const Home: React.FC = () => {
         <div className="flex flex-col items-start justify-between gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-center">
           <div>
             <h2 className="font-sans text-xl sm:text-2xl font-black text-slate-900">
-              {t('exploreCategories', 'Explore Popular Categories')}
+              {t('exploreCategories', lang, 'Explore Popular Categories')}
             </h2>
             <p className="text-sm text-slate-500 mt-1">
-              {t('exploreCategoriesDesc', 'Select an AI sector to view pre-configured prompt architectures and templates.')}
+              {t('exploreCategoriesDesc', lang, 'Select an AI sector to view pre-configured prompt architectures and templates.')}
             </p>
           </div>
         </div>
@@ -80,7 +77,7 @@ export const Home: React.FC = () => {
           {popularCategories.map((cat) => {
             const colorClasses = getColorClasses(cat.color);
             const IconComponent = iconMap[cat.icon] || Compass;
-            const localizedTitle = getLocalizedCategoryTitle(cat.slug, currentLang);
+            const localizedTitle = getLocalizedCategoryTitle(cat.slug, lang);
             return (
               <div
                 key={cat.id}
@@ -111,10 +108,10 @@ export const Home: React.FC = () => {
             </div>
             <div>
               <h2 className="font-sans text-xl sm:text-2xl font-black text-slate-900">
-                {t('latestPrompts', 'Latest Premium Prompts')}
+                {t('latestPrompts', lang, 'Latest Premium Prompts')}
               </h2>
               <p className="text-sm text-slate-500 mt-0.5">
-                {t('latestPromptsDesc', 'Copy-pasteable photorealistic prompts complete with seeds, camera parameters, and lighting styles.')}
+                {t('latestPromptsDesc', lang, 'Copy-pasteable photorealistic prompts complete with seeds, camera parameters, and lighting styles.')}
               </p>
             </div>
           </div>
@@ -122,7 +119,7 @@ export const Home: React.FC = () => {
             onClick={() => navigateTo('prompts')}
             className="flex items-center space-x-1 rtl:space-x-reverse text-xs font-bold text-[#e21833] hover:text-[#c21124] cursor-pointer"
           >
-            <span>{t('seePromptLibrary', 'See prompt library')}</span>
+            <span>{t('seePromptLibrary', lang, 'See prompt library')}</span>
             <ArrowRight className={`h-3.5 w-3.5 ${isRtl ? 'rotate-180' : ''}`} />
           </button>
         </div>
@@ -143,10 +140,10 @@ export const Home: React.FC = () => {
             </div>
             <div>
               <h2 className="font-sans text-xl sm:text-2xl font-black text-slate-900">
-                {t('devSkills', 'Developer & Writer Skills')}
+                {t('devSkills', lang, 'Developer & Writer Skills')}
               </h2>
               <p className="text-sm text-slate-500 mt-0.5">
-                {t('devSkillsDesc', 'Downloadable .cursorrules files, multi-step SEO prompts, and full-stack DB architecture schema tools.')}
+                {t('devSkillsDesc', lang, 'Downloadable .cursorrules files, multi-step SEO prompts, and full-stack DB architecture schema tools.')}
               </p>
             </div>
           </div>
@@ -154,7 +151,7 @@ export const Home: React.FC = () => {
             onClick={() => navigateTo('skills')}
             className="flex items-center space-x-1 rtl:space-x-reverse text-xs font-bold text-[#e21833] hover:text-[#c21124] cursor-pointer"
           >
-            <span>{t('seeDevSkills', 'See developer skills')}</span>
+            <span>{t('seeDevSkills', lang, 'See developer skills')}</span>
             <ArrowRight className={`h-3.5 w-3.5 ${isRtl ? 'rotate-180' : ''}`} />
           </button>
         </div>
@@ -176,10 +173,10 @@ export const Home: React.FC = () => {
               </div>
               <div>
                 <h2 className="font-sans text-xl sm:text-2xl font-black text-slate-900">
-                  {t('trendingVideos', 'Trending Viral Video Blueprints')}
+                  {t('trendingVideos', lang, 'Trending Viral Video Blueprints')}
                 </h2>
                 <p className="text-sm text-slate-500 mt-0.5">
-                  {t('trendingVideosDesc', 'The absolute highest-retention concepts, full voice scripts, thumbnail plans, and downloadable resource zip packs.')}
+                  {t('trendingVideosDesc', lang, 'The absolute highest-retention concepts, full voice scripts, thumbnail plans, and downloadable resource zip packs.')}
                 </p>
               </div>
             </div>
@@ -187,7 +184,7 @@ export const Home: React.FC = () => {
               onClick={() => navigateTo('videos')}
               className="flex items-center space-x-1 rtl:space-x-reverse text-xs font-bold text-[#e21833] hover:text-[#c21124] cursor-pointer"
             >
-              <span>{t('seeVideoPlans', 'See video plans')}</span>
+              <span>{t('seeVideoPlans', lang, 'See video plans')}</span>
               <ArrowRight className={`h-3.5 w-3.5 ${isRtl ? 'rotate-180' : ''}`} />
             </button>
           </div>
@@ -209,10 +206,10 @@ export const Home: React.FC = () => {
             </div>
             <div>
               <h2 className="font-sans text-xl sm:text-2xl font-black text-slate-900">
-                {t('guidesTutorials', 'Guides & Tutorials')}
+                {t('guidesTutorials', lang, 'Guides & Tutorials')}
               </h2>
               <p className="text-sm text-slate-500 mt-0.5">
-                {t('guidesTutorialsDesc', 'Actionable strategies explaining prompt logic, SEOMultiplier formulas, and short-form channel execution.')}
+                {t('guidesTutorialsDesc', lang, 'Actionable strategies explaining prompt logic, SEOMultiplier formulas, and short-form channel execution.')}
               </p>
             </div>
           </div>
@@ -220,7 +217,7 @@ export const Home: React.FC = () => {
             onClick={() => navigateTo('blog')}
             className="flex items-center space-x-1 rtl:space-x-reverse text-xs font-bold text-[#e21833] hover:text-[#c21124] cursor-pointer"
           >
-            <span>{t('seeBlogGuidebooks', 'See blog guidebooks')}</span>
+            <span>{t('seeBlogGuidebooks', lang, 'See blog guidebooks')}</span>
             <ArrowRight className={`h-3.5 w-3.5 ${isRtl ? 'rotate-180' : ''}`} />
           </button>
         </div>

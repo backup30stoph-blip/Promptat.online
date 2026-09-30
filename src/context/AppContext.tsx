@@ -6,6 +6,7 @@ import { PROMPTS } from '../data/prompts';
 import { SKILLS } from '../data/skills';
 import { VIDEO_CONCEPTS as VIDEOS } from '../data/videos';
 import { BLOGS } from '../data/blogs';
+import { databaseLocaleFilter } from '../utils/localeDatabase';
 
 interface AppContextType {
   // Data State
@@ -237,8 +238,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .order('created_at', { ascending: false });
       
       if (!pErr && promptsDb) {
+        const filteredDb = databaseLocaleFilter(promptsDb, currentLang);
         // Map database response to type safely
-        const formattedPrompts: AIPrompt[] = promptsDb.map((p: any) => ({
+        const formattedPrompts: AIPrompt[] = filteredDb.map((p: any) => ({
           id: p.id,
           title: p.title,
           slug: p.slug,
@@ -275,7 +277,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .order('created_at', { ascending: false });
 
       if (!sErr && skillsDb && skillsDb.length > 0) {
-        const formattedSkills: AISkill[] = skillsDb.map((s: any) => ({
+        const filteredDb = databaseLocaleFilter(skillsDb, currentLang);
+        const formattedSkills: AISkill[] = filteredDb.map((s: any) => ({
           id: s.id,
           title: s.title,
           slug: s.slug,
@@ -310,7 +313,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .order('created_at', { ascending: false });
 
       if (!vErr && videosDb && videosDb.length > 0) {
-        const formattedVideos: VideoConcept[] = videosDb.map((v: any) => ({
+        const filteredDb = databaseLocaleFilter(videosDb, currentLang);
+        const formattedVideos: VideoConcept[] = filteredDb.map((v: any) => ({
           id: v.id,
           title: v.title,
           slug: v.slug,
@@ -356,7 +360,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .order('published_at', { ascending: false });
 
       if (!bErr && blogsDb && blogsDb.length > 0) {
-        const formattedBlogs: BlogArticle[] = blogsDb.map((b: any) => ({
+        const filteredDb = databaseLocaleFilter(blogsDb, currentLang);
+        const formattedBlogs: BlogArticle[] = filteredDb.map((b: any) => ({
           id: b.id,
           title: b.title,
           slug: b.slug,
@@ -1199,7 +1204,14 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setBlogs,
       currentLang,
       switchLanguage,
-      t: (key: string, fallback?: string) => i18nT(key, currentLang, fallback),
+      t: (key: string, fallback?: string) => {
+        let pathLang = currentLang;
+        if (typeof window !== 'undefined') {
+          const parsed = parseLanguagePath(window.location.pathname);
+          pathLang = parsed.lang;
+        }
+        return i18nT(key, pathLang, fallback);
+      },
       isRtl: currentLang === 'ar',
       state,
       darkMode,

@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
+import { useI18n } from '../../hooks/useI18n';
 import { 
   X, Search, Home as HomeIcon, Sparkles, Cpu, Film, BookOpen, 
-  Bookmark, Zap, Flame, Globe, User, Settings, Shield, LogOut, LogIn, Check, Newspaper 
+  Bookmark, Zap, Flame, Globe, Settings, Shield, LogOut, LogIn, Check, Newspaper 
 } from 'lucide-react';
-import { SUPPORTED_LANGUAGES, LanguageCode, getNavigation } from '../../lib/i18n';
+import { SUPPORTED_LANGUAGES, getNavigation } from '../../lib/i18n';
 
 const ICON_MAP = {
   Home: HomeIcon,
@@ -39,10 +40,10 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
     profile, 
     isAdmin, 
     logout, 
-    currentLang, 
     switchLanguage, 
-    t 
   } = useApp();
+
+  const { lang, t } = useI18n();
 
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -71,8 +72,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
 
   if (!open) return null;
 
-  const dynamicNavItems = getNavigation(currentLang);
-
+  const dynamicNavItems = getNavigation(lang);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -115,7 +115,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
             type="button"
             onClick={onClose}
             className="rounded-xl p-2 text-white hover:bg-white/10 transition-colors cursor-pointer"
-            aria-label={t('nav.closeMenu', 'إغلاق القائمة')}
+            aria-label={t('navCloseMenu', lang)}
           >
             <X className="h-5 w-5" />
           </button>
@@ -129,7 +129,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t('searchPromptSkillGuide', 'Find a prompt, skill, guide...')}
+              placeholder={t('searchPromptSkillGuide', lang)}
               className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-3 pr-9 rtl:pr-3 rtl:pl-9 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-red-200 shadow-inner"
             />
             <button type="submit" className="absolute inset-y-0 right-0 rtl:right-auto rtl:left-0 flex items-center pr-3 rtl:pl-3 text-slate-400">
@@ -138,9 +138,9 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
           </form>
 
           {/* Section Navigation Links */}
-          <nav aria-label={t('nav.primary', 'الأقسام الرئيسية')} className="space-y-1">
+          <nav aria-label={t('navPrimary', lang)} className="space-y-1">
             <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 px-3 mb-1.5">
-              {t('navSections', 'الأقسام الرئيسية')}
+              {t('navSections', lang)}
             </p>
             {dynamicNavItems.map((item) => {
               const isActive = activeTab === item.id;
@@ -161,6 +161,14 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                 >
                   <Icon className={`h-4 w-4 ${isActive ? 'text-[#e21833]' : 'text-slate-400'}`} />
                   <span>{item.label}</span>
+                  {item.id === 'news' && (
+                    <span className={`ms-auto inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[9px] font-black uppercase tracking-wider ${
+                      isActive ? 'bg-[#e21833] text-white' : 'bg-red-100 text-[#e21833]'
+                    }`}>
+                      <span className={`h-1.5 w-1.5 rounded-full ${isActive ? 'bg-white' : 'bg-[#e21833]'} animate-pulse`} />
+                      {t('navNewsBadge', lang)}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -169,7 +177,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
           {/* Browse Group (Quick Filters & Bookmarks) */}
           <div className="pt-3 border-t border-slate-100 space-y-1">
             <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 px-3 mb-1.5">
-              {t('navBrowseGroup', 'التصفح والتصفية')}
+              {t('navBrowseGroup', lang)}
             </p>
             <button
               type="button"
@@ -180,7 +188,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
               className="flex w-full items-center gap-3 py-2 px-3 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer"
             >
               <Zap className="h-4 w-4 text-amber-500" />
-              <span>{t('navLatest', 'الأحدث')}</span>
+              <span>{t('navLatest', lang)}</span>
             </button>
             <button
               type="button"
@@ -191,7 +199,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
               className="flex w-full items-center gap-3 py-2 px-3 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 cursor-pointer"
             >
               <Flame className="h-4 w-4 text-rose-500" />
-              <span>{t('navPopular', 'الأكثر شعبية')}</span>
+              <span>{t('navPopular', lang)}</span>
             </button>
             <button
               type="button"
@@ -203,7 +211,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
             >
               <div className="flex items-center gap-3">
                 <Bookmark className="h-4 w-4 text-[#e21833]" />
-                <span>{t('navSavedCollection', 'المجموعة المحفوظة')}</span>
+                <span>{t('navSavedCollection', lang)}</span>
               </div>
               {bookmarkCount > 0 && (
                 <span className="rounded-full bg-[#e21833] text-white text-[10px] font-black px-2 py-0.5">
@@ -217,17 +225,17 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
           <div className="pt-3 border-t border-slate-100 space-y-1">
             <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 px-3 mb-1.5 flex items-center gap-1.5">
               <Globe className="h-3.5 w-3.5 text-slate-400" />
-              <span>{t('selectLanguage', 'اختر اللغة / Select Language')}</span>
+              <span>{t('selectLanguage', lang)}</span>
             </p>
             <div className="space-y-0.5">
-              {Object.values(SUPPORTED_LANGUAGES).map((lang) => {
-                const isSelected = lang.code === currentLang;
+              {Object.values(SUPPORTED_LANGUAGES).map((l) => {
+                const isSelected = l.code === lang;
                 return (
                   <button
-                    key={lang.code}
+                    key={l.code}
                     type="button"
                     onClick={() => {
-                      switchLanguage(lang.code);
+                      switchLanguage(l.code);
                       onClose();
                     }}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-colors cursor-pointer ${
@@ -235,8 +243,8 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <span className="text-base leading-none">{lang.flag}</span>
-                      <span>{lang.nativeName} ({lang.name})</span>
+                      <span className="text-base leading-none">{l.flag}</span>
+                      <span>{l.nativeName} ({l.name})</span>
                     </div>
                     {isSelected && <Check className="h-4 w-4 text-[#e21833]" />}
                   </button>
@@ -275,7 +283,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                 className="w-full flex items-center gap-2.5 py-2 px-3 rounded-xl text-xs font-bold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 cursor-pointer"
               >
                 <Settings className="h-4 w-4 text-slate-400" />
-                <span>{t('accountSettings', 'إعدادات الحساب')}</span>
+                <span>{t('accountSettings', lang)}</span>
               </button>
 
               {/* SECRET ADMIN PANEL BUTTON (ONLY SHOWN IF USER IS ADMIN) */}
@@ -289,7 +297,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                   className="w-full flex items-center gap-2.5 py-2 px-3 rounded-xl text-xs font-bold text-[#e21833] bg-red-100/70 border border-red-200 hover:bg-red-100 cursor-pointer"
                 >
                   <Shield className="h-4 w-4 text-[#e21833]" />
-                  <span>{t('navAdminPanel', 'لوحة التحكم')}</span>
+                  <span>{t('navAdminPanel', lang)}</span>
                 </button>
               )}
 
@@ -302,7 +310,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
                 className="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-bold text-rose-600 bg-rose-50 hover:bg-rose-100 cursor-pointer"
               >
                 <LogOut className="h-4 w-4" />
-                <span>{t('navSignOut', 'تسجيل الخروج')}</span>
+                <span>{t('navSignOut', lang)}</span>
               </button>
             </div>
           ) : (
@@ -315,7 +323,7 @@ export const MobileDrawer: React.FC<MobileDrawerProps> = ({
               className="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider bg-[#e21833] text-white hover:bg-red-700 transition-colors shadow-md cursor-pointer"
             >
               <LogIn className="h-4 w-4" />
-              <span>{t('navSignIn', 'تسجيل الدخول')}</span>
+              <span>{t('navSignIn', lang)}</span>
             </button>
           )}
         </div>

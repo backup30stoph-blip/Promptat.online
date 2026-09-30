@@ -271,40 +271,12 @@ export const Prompts: React.FC = () => {
       ]
     };
 
-    const breadcrumbSchema = {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "Home",
-          "item": window.location.origin
-        },
-        {
-          "@type": "ListItem",
-          "position": 2,
-          "name": "Prompts",
-          "item": `${window.location.origin}/prompts`
-        },
-        {
-          "@type": "ListItem",
-          "position": 3,
-          "name": currentPrompt.title,
-          "item": `${window.location.origin}/prompts/${currentPrompt.slug}`
-        }
-      ]
-    };
-
     return (
       <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-12">
         <ScrollProgressBar />
         {/* Schema Injection */}
         <script type="application/ld+json">
           {JSON.stringify(creativeWorkSchema)}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify(breadcrumbSchema)}
         </script>
 
         {/* Top Navigation Row */}
@@ -328,7 +300,7 @@ export const Prompts: React.FC = () => {
                 src={currentPrompt.thumbnail || 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80'} 
                 alt={currentPrompt.title}
                 referrerPolicy="no-referrer"
-                className="w-full aspect-[4/3] sm:aspect-16/10 object-cover object-center"
+                className="w-full aspect-[4/5] sm:aspect-[3/4] object-cover object-center"
               />
             </div>
             
@@ -773,262 +745,116 @@ export const Prompts: React.FC = () => {
         </div>
       )}
 
-      {/* SIDEBAR FILTER AND CATALOG GRID LAYOUT */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      {/* CATALOG GRID LAYOUT */}
+      <div className="w-full space-y-6">
         
-        {/* Left Filter Sidebar */}
-        <div className="lg:col-span-3 space-y-6 lg:sticky lg:top-24 bg-slate-50/70 border border-slate-200/75 rounded-2xl p-5 shadow-xs">
-          
-          {/* Categories Block */}
-          <div className="space-y-4">
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
-              {t('filterCategory', 'Filter By Category')}
-            </span>
-            <div className="flex flex-col space-y-1">
-              <button
-                onClick={() => setSelectedCategory('all')}
-                className={`w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
-                  selectedCategory === 'all'
-                    ? 'bg-[#e21833] text-white shadow-xs'
-                    : 'text-slate-600 hover:bg-slate-150/70 hover:text-slate-900'
-                }`}
-              >
-                <span>📂 {t('filterAll', 'All Categories')}</span>
-                <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md ${selectedCategory === 'all' ? 'bg-red-700 text-white' : 'bg-slate-200/80 text-slate-600'}`}>
-                  {prompts.length}
-                </span>
-              </button>
-
-              {/* Primary Segments requested */}
-              <div className="pt-2">
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block px-3.5 mb-1.5">
-                  {t('exploreCategories', 'Primary Segments')}
-                </span>
-                {promptCategories
-                  .filter(cat => ['developer-tools', 'marketing', 'writing'].includes(cat.slug))
-                  .map(cat => {
-                    const isSelected = selectedCategory === cat.slug;
-                    return (
-                      <button
-                        key={cat.id}
-                        onClick={() => setSelectedCategory(cat.slug)}
-                        className={`w-full text-left px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center justify-between cursor-pointer ${
-                          isSelected
-                            ? 'bg-indigo-600 text-white shadow-xs'
-                            : 'text-slate-600 hover:bg-slate-150/70 hover:text-slate-900'
-                        }`}
-                      >
-                        <span className="flex items-center gap-2">
-                          <span className="text-indigo-400">⚡</span>
-                          <span>{getLocalizedCategoryTitle(cat.slug, currentLang)}</span>
-                        </span>
-                      </button>
-                    );
-                  })}
-              </div>
-
-              {/* Other Creative Genres */}
-              <div className="pt-2">
-                <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest block px-3.5 mb-1.5">
-                  {t('footerPopularNiches', 'Creative Genres')}
-                </span>
-                <div className="max-h-64 overflow-y-auto pr-1 space-y-0.5 custom-scrollbar">
-                  {promptCategories
-                    .filter(cat => !['developer-tools', 'marketing', 'writing'].includes(cat.slug))
-                    .map(cat => {
-                      const isSelected = selectedCategory === cat.slug;
-                      return (
-                        <button
-                          key={cat.id}
-                          onClick={() => setSelectedCategory(cat.slug)}
-                          className={`w-full text-left px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center justify-between cursor-pointer ${
-                            isSelected
-                              ? 'bg-indigo-600 text-white shadow-xs'
-                              : 'text-slate-600 hover:bg-slate-150/50 hover:text-slate-950'
-                          }`}
-                        >
-                          <span>{getLocalizedCategoryTitle(cat.slug, currentLang)}</span>
-                        </button>
-                      );
-                    })}
-                </div>
-              </div>
-
+        {/* Top Search and Stats Row */}
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
+          {/* Search Input */}
+          <div className="relative w-full sm:max-w-md">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
+              <Search className="h-4 w-4 text-slate-400" />
             </div>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder={t('searchPlaceholder', 'Search prompt, model or style...')}
+              className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-xs outline-none transition-all focus:border-[#e21833] focus:ring-2 focus:ring-red-100"
+            />
           </div>
 
-          {/* Model selection inside sidebar */}
-          <div className="space-y-2 pt-4 border-t border-slate-200">
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
-              {t('filterModel', 'Model Compatibility')}
-            </span>
-            <select
-              value={selectedModel}
-              onChange={(e) => setSelectedModel(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-700 outline-none focus:border-indigo-500 shadow-xs cursor-pointer"
+          {/* Quick Sort Tabs */}
+          <div className="flex items-center space-x-1 shrink-0 bg-slate-100/70 p-1 rounded-xl border border-slate-200/60 self-end sm:self-auto">
+            <button
+              onClick={() => setSortBy('likes')}
+              className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                sortBy === 'likes' || sortBy === 'popularity'
+                  ? 'bg-white text-indigo-700 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
-              <option value="all">{t('filterAll', 'All Models')}</option>
-              <option value="midjourney">Midjourney v6</option>
-              <option value="flux">Flux.1</option>
-              <option value="dalle">DALL-E 3</option>
-              <option value="stable">Stable Diffusion 3</option>
-            </select>
-          </div>
-
-          {/* Difficulty Selection inside sidebar */}
-          <div className="space-y-2 pt-4 border-t border-slate-200">
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
-              {t('filterDifficulty', 'Difficulty Level')}
-            </span>
-            <select
-              value={selectedDifficulty}
-              onChange={(e) => setSelectedDifficulty(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-700 outline-none focus:border-indigo-500 shadow-xs cursor-pointer"
+              🔥 {t('sortLikes', 'Popular')}
+            </button>
+            <button
+              onClick={() => setSortBy('newest')}
+              className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                sortBy === 'newest'
+                  ? 'bg-white text-indigo-700 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
-              <option value="all">{t('filterAll', 'All Difficulties')}</option>
-              <option value="Beginner">{t('beginner', 'Beginner')}</option>
-              <option value="Intermediate">{t('intermediate', 'Intermediate')}</option>
-              <option value="Expert">{t('expert', 'Expert')}</option>
-            </select>
-          </div>
-
-          {/* Sort Selection inside sidebar */}
-          <div className="space-y-2 pt-4 border-t border-slate-200">
-            <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
-              {t('sortBy', 'Sorting Criteria')}
-            </span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white p-2.5 text-xs text-slate-700 outline-none focus:border-indigo-500 shadow-xs cursor-pointer font-medium"
+              ✨ {t('sortDate', 'Newest')}
+            </button>
+            <button
+              onClick={() => setSortBy('most_discussed')}
+              className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
+                sortBy === 'most_discussed'
+                  ? 'bg-white text-indigo-700 shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
             >
-              <option value="likes">{t('sortLikes', 'Popularity')}</option>
-              <option value="newest">{t('sortDate', 'Newest')}</option>
-              <option value="most_discussed">{t('comments', 'Most Discussed')}</option>
-              <option value="downloads">{t('sortDownloads', 'Downloads')}</option>
-              <option value="views">{t('sortViews', 'Views')}</option>
-            </select>
+              💬 {t('comments', 'Discussed')}
+            </button>
           </div>
-
-          {/* Sidebar Desktop Ad */}
-          <div className="pt-4 mt-4 border-t border-slate-200 hidden lg:block">
-            <AdSlot placement="sidebar-desktop" pageType="prompt" />
-          </div>
-
         </div>
 
-        {/* Right Main Grid Area */}
-        <div className="lg:col-span-9 space-y-6">
-          
-          {/* Top Search and Stats Row */}
-          <div className="flex flex-col sm:flex-row gap-4 items-center justify-between">
-            {/* Search Input */}
-            <div className="relative w-full sm:max-w-md">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5">
-                <Search className="h-4 w-4 text-slate-400" />
-              </div>
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t('searchPlaceholder', 'Search prompt, model or style...')}
-                className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-10 pr-4 text-xs outline-none transition-all focus:border-[#e21833] focus:ring-2 focus:ring-red-100"
-              />
+        {/* Active category banner notice */}
+        {selectedCategory !== 'all' && (
+          <div className="flex items-center justify-between rounded-xl bg-indigo-50 border border-indigo-100/70 px-4 py-3 text-xs text-indigo-800">
+            <div className="flex items-center gap-2">
+              <span className="font-semibold">{t('filterCategory', 'Selected Segment')}:</span>
+              <span className="font-bold bg-white px-2.5 py-0.5 rounded-lg border border-indigo-200 text-indigo-700 uppercase tracking-wider text-[10px]">
+                {getLocalizedCategoryTitle(selectedCategory, currentLang)}
+              </span>
             </div>
-
-            {/* Quick Sort Tabs */}
-            <div className="flex items-center space-x-1 shrink-0 bg-slate-100/70 p-1 rounded-xl border border-slate-200/60 self-end sm:self-auto">
-              <button
-                onClick={() => setSortBy('likes')}
-                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                  sortBy === 'likes' || sortBy === 'popularity'
-                    ? 'bg-white text-indigo-700 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                🔥 {t('sortLikes', 'Popular')}
-              </button>
-              <button
-                onClick={() => setSortBy('newest')}
-                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                  sortBy === 'newest'
-                    ? 'bg-white text-indigo-700 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                ✨ {t('sortDate', 'Newest')}
-              </button>
-              <button
-                onClick={() => setSortBy('most_discussed')}
-                className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
-                  sortBy === 'most_discussed'
-                    ? 'bg-white text-indigo-700 shadow-xs'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                💬 {t('comments', 'Discussed')}
-              </button>
-            </div>
+            <button
+              onClick={() => setSelectedCategory('all')}
+              className="font-bold hover:underline cursor-pointer text-indigo-600"
+            >
+              {t('resetFilters', 'Clear Filter')}
+            </button>
           </div>
+        )}
 
-          {/* Active category banner notice */}
-          {selectedCategory !== 'all' && (
-            <div className="flex items-center justify-between rounded-xl bg-indigo-50 border border-indigo-100/70 px-4 py-3 text-xs text-indigo-800">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold">{t('filterCategory', 'Selected Segment')}:</span>
-                <span className="font-bold bg-white px-2.5 py-0.5 rounded-lg border border-indigo-200 text-indigo-700 uppercase tracking-wider text-[10px]">
-                  {getLocalizedCategoryTitle(selectedCategory, currentLang)}
-                </span>
-              </div>
-              <button
-                onClick={() => setSelectedCategory('all')}
-                className="font-bold hover:underline cursor-pointer text-indigo-600"
-              >
-                {t('resetFilters', 'Clear Filter')}
-              </button>
-            </div>
-          )}
-
-          {/* Prompts Catalog Grid */}
-          {isLoading ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              <Skeleton variant="card" count={6} />
-            </div>
-          ) : filteredPrompts.length > 0 ? (
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {filteredPrompts.map((p, index) => (
-                <React.Fragment key={p.id}>
-                  <PromptCard prompt={p} />
-                  {index > 0 && (index + 1) % 6 === 0 && (
-                    <div className="col-span-1 sm:col-span-2 lg:col-span-3">
-                      <AdSlot placement="in-feed-prompts" pageType="prompt" />
-                    </div>
-                  )}
-                </React.Fragment>
-              ))}
-            </div>
-          ) : (
-            <div className="rounded-2xl border border-dashed border-slate-200 p-16 text-center bg-white shadow-xs">
-              <SlidersHorizontal className="mx-auto h-10 w-10 text-slate-400" />
-              <h3 className="mt-4 text-sm font-bold text-slate-900">{t('noResultsFound', 'No prompt blueprints found')}</h3>
-              <p className="mt-1 text-xs text-slate-500">
-                {t('noResultsDesc', "We couldn't find any resources matching your exact combination of search terms and filter categories.")}
-              </p>
-              <button
-                onClick={() => {
-                  setSelectedCategory('all');
-                  setSelectedDifficulty('all');
-                  setSelectedModel('all');
-                  setSearchQuery('');
-                }}
-                className="mt-4 rounded-xl bg-[#e21833] px-4 py-2 text-xs font-semibold text-white cursor-pointer hover:bg-red-700 transition-all"
-              >
-                {t('resetFilters', 'Reset Filters')}
-              </button>
-            </div>
-          )}
-
-        </div>
+        {/* Prompts Catalog Grid */}
+        {isLoading ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            <Skeleton variant="card" count={8} />
+          </div>
+        ) : filteredPrompts.length > 0 ? (
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {filteredPrompts.map((p, index) => (
+              <React.Fragment key={p.id}>
+                <PromptCard prompt={p} />
+                {index > 0 && (index + 1) % 8 === 0 && (
+                  <div className="col-span-1 sm:col-span-2 md:col-span-3 lg:col-span-4">
+                    <AdSlot placement="in-feed-prompts" pageType="prompt" />
+                  </div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl border border-dashed border-slate-200 p-16 text-center bg-white shadow-xs">
+            <SlidersHorizontal className="mx-auto h-10 w-10 text-slate-400" />
+            <h3 className="mt-4 text-sm font-bold text-slate-900">{t('noResultsFound', 'No prompt blueprints found')}</h3>
+            <p className="mt-1 text-xs text-slate-500">
+              {t('noResultsDesc', "We couldn't find any resources matching your exact combination of search terms and filter categories.")}
+            </p>
+            <button
+              onClick={() => {
+                setSelectedCategory('all');
+                setSelectedDifficulty('all');
+                setSelectedModel('all');
+                setSearchQuery('');
+              }}
+              className="mt-4 rounded-xl bg-[#e21833] px-4 py-2 text-xs font-semibold text-white cursor-pointer hover:bg-red-700 transition-all"
+            >
+              {t('resetFilters', 'Reset Filters')}
+            </button>
+          </div>
+        )}
 
       </div>
 
