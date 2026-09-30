@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /account/
+Disallow: /search
+Disallow: /login
+
+Sitemap: https://gemiprompts.store/sitemap.xml

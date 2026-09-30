@@ -1,0 +1,6 @@
+{
+  "name": "Promptat.online",
+  "description": "برومبتات أونلاين - منصة النماذج والتعليمات الذكية لأوامر الذكاء الاصطناعي والمبدعين | Premium AI Prompts & Creator Blueprints",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
