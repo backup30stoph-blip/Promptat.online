@@ -262,9 +262,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           featured: p.featured || false,
           premium: p.premium || false,
           seed: p.seed || undefined,
-          created_at: p.created_at,
-          translation_group_id: p.translation_group_id || p.id,
-          lang: p.lang || 'ar'
+          created_at: p.created_at
         }));
         
         setPrompts(formattedPrompts.length > 0 ? formattedPrompts : PROMPTS);
@@ -300,9 +298,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           premium: s.premium || false,
           supported_ai: s.supported_ai || [],
           installation: s.installation || 'Copy instructions into setup files.',
-          how_to_use: s.how_to_use || 'Incorporate inside agent directives.',
-          translation_group_id: s.translation_group_id || s.id,
-          lang: s.lang || 'ar'
+          how_to_use: s.how_to_use || 'Incorporate inside agent directives.'
         }));
 
         setSkills(formattedSkills);
@@ -349,9 +345,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           downloads: v.downloads || 0,
           views: v.views || 0,
           likes: v.likes || 0,
-          featured: v.featured || false,
-          translation_group_id: v.translation_group_id || v.id,
-          lang: v.lang || 'ar'
+          featured: v.featured || false
         }));
 
         setVideos(formattedVideos);
@@ -383,9 +377,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           published_at: b.published_at,
           views: b.views || 0,
           likes: b.likes || 0,
-          read_time: `${Math.max(1, Math.ceil((b.content || '').split(/\s+/).length / 200))} min read`,
-          translation_group_id: b.translation_group_id || b.id,
-          lang: b.lang || 'ar'
+          read_time: `${Math.max(1, Math.ceil((b.content || '').split(/\s+/).length / 200))} min read`
         }));
         setBlogs(formattedBlogs);
       } else {
@@ -642,7 +634,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const cleanPath = basePath.replace(/\/+$/, '') || '/'; // e.g. "/prompts/biophilic" or "/prompts" or "/"
     const parts = cleanPath.split('/').filter(Boolean); // e.g. ['prompts', 'biophilic']
 
-    if (parts.length === 0) {
+    if (parts.length === 0 || (parts.length === 1 && parts[0] === 'active')) {
       setActiveTab('home');
       setActiveDetail(null);
       return;
@@ -830,63 +822,13 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     }, 3000);
   };
 
-  // Language Switcher Controller with translation_group_id slug counterpart lookup
-  const switchLanguage = async (newLang: LanguageCode) => {
-    let targetPath = window.location.pathname;
-    const { basePath } = parseLanguagePath(targetPath);
-    
-    // Check if we are currently viewing an active item details view
-    if (activeDetail && activeDetail.slug) {
-      let currentItem: any = null;
-      let tableName = '';
-      let pluralType = '';
-      
-      if (activeDetail.type === 'prompt') {
-        currentItem = prompts.find(p => p.slug === activeDetail.slug);
-        tableName = 'prompts';
-        pluralType = 'prompts';
-      } else if (activeDetail.type === 'skill') {
-        currentItem = skills.find(s => s.slug === activeDetail.slug);
-        tableName = 'skills';
-        pluralType = 'skills';
-      } else if (activeDetail.type === 'video') {
-        currentItem = videos.find(v => v.slug === activeDetail.slug);
-        tableName = 'video_concepts';
-        pluralType = 'videos';
-      } else if (activeDetail.type === 'blog') {
-        currentItem = blogs.find(b => b.slug === activeDetail.slug);
-        tableName = 'blogs';
-        pluralType = 'blog';
-      }
-      
-      if (currentItem && currentItem.translation_group_id) {
-        // Query the translated counterpart from Supabase using translation_group_id
-        const { data, error } = await supabase
-          .from(tableName)
-          .select('slug')
-          .eq('translation_group_id', currentItem.translation_group_id)
-          .eq('lang', newLang)
-          .maybeSingle();
-          
-        if (!error && data && data.slug) {
-          const newBasePath = `/${pluralType}/${data.slug}`;
-          targetPath = buildLocalizedPath(newBasePath, newLang);
-          setActiveDetail({ type: activeDetail.type, slug: data.slug });
-        } else {
-          // If translation is not found, fallback to the list of the category
-          targetPath = buildLocalizedPath(`/${pluralType}`, newLang);
-          setActiveDetail(null);
-        }
-      } else {
-        targetPath = buildLocalizedPath(basePath, newLang);
-      }
-    } else {
-      targetPath = buildLocalizedPath(basePath, newLang);
-    }
-
+  // Language Switcher Controller
+  const switchLanguage = (newLang: LanguageCode) => {
     setCurrentLang(newLang);
     localStorage.setItem('promptat_lang', newLang);
-    window.history.pushState(null, '', targetPath);
+    const { basePath } = parseLanguagePath(window.location.pathname);
+    const localizedPath = buildLocalizedPath(basePath, newLang);
+    window.history.pushState(null, '', localizedPath);
     
     // Update HTML doc language and direction
     const config = SUPPORTED_LANGUAGES[newLang] || SUPPORTED_LANGUAGES.ar;
@@ -901,14 +843,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
     updateDocumentLanguageAndSeo(
       newLang,
-      parseLanguagePath(targetPath).basePath,
+      basePath,
       document.title,
       'برومبتات أونلاين | Promptat Online - منصة النماذج والتعليمات الذكية'
     );
     showNotification(`Language switched to ${config.nativeName}`, 'info');
-    
-    // Trigger data refresh to dynamically load data matching the new active language
-    refreshData();
   };
 
   // Navigation controller using HTML5 History API (BrowserRouter style)
