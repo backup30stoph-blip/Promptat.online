@@ -258,8 +258,21 @@ export const MediaLibrary: React.FC = () => {
 
     try {
       // 1. Delete from storage bucket
-      const cleanFileName = asset.file_name;
-      await supabase.storage.from('media').remove([cleanFileName]);
+      const pathsToDelete = [asset.file_name];
+      if (asset.storage_path && asset.storage_path !== asset.file_name) {
+        pathsToDelete.push(asset.storage_path);
+        // If storage_path includes bucket name, try pushing without bucket name
+        if (asset.storage_path.startsWith('media/')) {
+          pathsToDelete.push(asset.storage_path.replace('media/', ''));
+        }
+      }
+      if (asset.public_url) {
+        const urlParts = asset.public_url.split('/storage/v1/object/public/media/');
+        if (urlParts.length > 1 && !pathsToDelete.includes(urlParts[1])) {
+          pathsToDelete.push(decodeURIComponent(urlParts[1]));
+        }
+      }
+      await supabase.storage.from('media').remove(pathsToDelete);
 
       // 2. Delete database row
       const { error } = await supabase

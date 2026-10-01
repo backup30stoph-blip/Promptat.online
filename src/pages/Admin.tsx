@@ -59,10 +59,7 @@ export const Admin: React.FC = () => {
   });
 
   // Media database state
-  const [mediaList, setMediaList] = useState<any[]>([
-    { id: '1', filename: 'cyberpunk_neon_city.png', url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80', mime_type: 'image/png', size: 102456 },
-    { id: '2', filename: 'retro_adventure_nature.jpg', url: 'https://images.unsplash.com/photo-1542435503-956c469947f6?auto=format&fit=crop&w=800&q=80', mime_type: 'image/jpeg', size: 245120 },
-  ]);
+  const [mediaList, setMediaList] = useState<any[]>([]);
   const [newMediaUrl, setNewMediaUrl] = useState('');
   const [newMediaName, setNewMediaName] = useState('');
 
@@ -162,38 +159,50 @@ export const Admin: React.FC = () => {
   useEffect(() => {
     const loadCategoriesAndPages = async () => {
       try {
+        const isUserAuthenticated = !!user;
+
         // Categories
-        const { data: catDb } = await supabase.from('categories').select('*');
-        if (catDb && catDb.length > 0) {
+        const { data: catDb, error: catErr } = await supabase.from('categories').select('*');
+        if (!catErr && catDb) {
           setCategories(catDb);
         } else {
-          // Local default Categories
-          setCategories([
-            { id: 'p-arch', title: 'Architecture', slug: 'architecture', type: 'Prompt' },
-            { id: 'p-port', title: 'Portraits', slug: 'portraits', type: 'Prompt' },
-            { id: 's-cod', title: 'Coding Rulebooks', slug: 'coding', type: 'Skill' },
-            { id: 's-flow', title: 'Workflow Accelerators', slug: 'workflows', type: 'Skill' }
-          ]);
+          // Local default Categories only if guest/demo
+          if (isUserAuthenticated) {
+            setCategories([]);
+          } else {
+            setCategories([
+              { id: 'p-arch', title: 'Architecture', slug: 'architecture', type: 'Prompt' },
+              { id: 'p-port', title: 'Portraits', slug: 'portraits', type: 'Prompt' },
+              { id: 's-cod', title: 'Coding Rulebooks', slug: 'coding', type: 'Skill' },
+              { id: 's-flow', title: 'Workflow Accelerators', slug: 'workflows', type: 'Skill' }
+            ]);
+          }
         }
 
         // Static Pages
-        const { data: pageDb } = await supabase.from('site_pages').select('*');
-        if (pageDb && pageDb.length > 0) {
+        const { data: pageDb, error: pageErr } = await supabase.from('site_pages').select('*');
+        if (!pageErr && pageDb) {
           setSitePages(pageDb);
         } else {
-          setSitePages([
-            { id: 'p1', title: 'Privacy Policy', slug: 'privacy-policy', content: '# Privacy Policy\n\nEdit guidelines here.' },
-            { id: 'p2', title: 'Terms & Conditions', slug: 'terms-conditions', content: '# Terms and Conditions\n\nEdit guidelines here.' },
-            { id: 'p3', title: 'About Us', slug: 'about-us', content: '# About Us\n\nWe provide top templates.' },
-            { id: 'p4', title: 'Contact Us', slug: 'contact-us', content: '# Contact Us\n\nEmail at support@example.com' },
-            { id: 'p5', title: 'Archive', slug: 'archive', content: '# Directory Archive\n\nHistorical database logs.' }
-          ]);
+          if (isUserAuthenticated) {
+            setSitePages([]);
+          } else {
+            setSitePages([
+              { id: 'p1', title: 'Privacy Policy', slug: 'privacy-policy', content: '# Privacy Policy\n\nEdit guidelines here.' },
+              { id: 'p2', title: 'Terms & Conditions', slug: 'terms-conditions', content: '# Terms and Conditions\n\nEdit guidelines here.' },
+              { id: 'p3', title: 'About Us', slug: 'about-us', content: '# About Us\n\nWe provide top templates.' },
+              { id: 'p4', title: 'Contact Us', slug: 'contact-us', content: '# Contact Us\n\nEmail at support@example.com' },
+              { id: 'p5', title: 'Archive', slug: 'archive', content: '# Directory Archive\n\nHistorical database logs.' }
+            ]);
+          }
         }
 
         // Media lists
-        const { data: mediaDb } = await supabase.from('media_uploads').select('*');
-        if (mediaDb && mediaDb.length > 0) {
+        const { data: mediaDb, error: mediaErr } = await supabase.from('media_uploads').select('*');
+        if (!mediaErr && mediaDb) {
           setMediaList(mediaDb);
+        } else {
+          setMediaList([]);
         }
 
         // Settings

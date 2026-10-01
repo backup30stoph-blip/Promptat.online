@@ -28,7 +28,7 @@ import { ConsentBanner } from './components/ConsentBanner';
 import { AdBlockDetection } from './components/AdBlockDetection';
 import { AuthModal } from './components/AuthModal';
 import { TranslationAvailableBanner } from './components/layout/TranslationAvailableBanner';
-import { updateDocumentLanguageAndSeo, getPageSeoMetadata } from './lib/i18n';
+import { updateDocumentLanguageAndSeo, getPageSeoMetadata, useCanonicalSync } from './lib/i18n';
 
 const AppContent: React.FC = () => {
   const { 
@@ -40,6 +40,9 @@ const AppContent: React.FC = () => {
     currentLang, 
     switchLanguage 
   } = useApp();
+  
+  // Dynamically synchronize canonical and hreflang tags globally across all pages
+  useCanonicalSync();
   
   // Activate global keyboard shortcuts
   useKeyboardShortcuts();

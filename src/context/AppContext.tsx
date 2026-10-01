@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { AIPrompt, AISkill, VideoConcept, BlogArticle, UserCollection, AppState } from '../types';
 import { supabase } from '../services/supabase/client';
-import { LanguageCode, parseLanguagePath, buildLocalizedPath, updateDocumentLanguageAndSeo, SUPPORTED_LANGUAGES, t as i18nT, getLocalizedItem } from '../lib/i18n';
+import { LanguageCode, parseLanguagePath, buildLocalizedPath, updateDocumentLanguageAndSeo, SUPPORTED_LANGUAGES, t as i18nT, getLocalizedItem, generateLanguageSlug, LOCALIZED_CONTENT } from '../lib/i18n';
 import { PROMPTS } from '../data/prompts';
 import { SKILLS } from '../data/skills';
 import { VIDEO_CONCEPTS as VIDEOS } from '../data/videos';
@@ -231,6 +231,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   // Fetch data dynamically from Supabase with safe local static fallbacks
   const refreshData = async () => {
     try {
+      // Check if there is an active session
+      const { data: { session } } = await supabase.auth.getSession();
+      const isUserAuthenticated = !!session || !!user;
+
       // 1. Fetch Prompts
       const { data: promptsDb, error: pErr } = await supabase
         .from('prompts')
@@ -265,9 +269,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           created_at: p.created_at
         }));
         
-        setPrompts(formattedPrompts.length > 0 ? formattedPrompts : PROMPTS);
+        setPrompts(formattedPrompts);
       } else {
-        setPrompts(PROMPTS);
+        setPrompts(isUserAuthenticated ? [] : PROMPTS);
       }
 
       // 2. Fetch Skills
@@ -276,7 +280,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (!sErr && skillsDb && skillsDb.length > 0) {
+      if (!sErr && skillsDb) {
         const filteredDb = databaseLocaleFilter(skillsDb, currentLang);
         const formattedSkills: AISkill[] = filteredDb.map((s: any) => ({
           id: s.id,
@@ -303,7 +307,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
         setSkills(formattedSkills);
       } else {
-        setSkills(SKILLS);
+        setSkills(isUserAuthenticated ? [] : SKILLS);
       }
 
       // 3. Fetch Video Concepts
@@ -312,7 +316,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (!vErr && videosDb && videosDb.length > 0) {
+      if (!vErr && videosDb) {
         const filteredDb = databaseLocaleFilter(videosDb, currentLang);
         const formattedVideos: VideoConcept[] = filteredDb.map((v: any) => ({
           id: v.id,
@@ -350,7 +354,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
         setVideos(formattedVideos);
       } else {
-        setVideos(VIDEOS);
+        setVideos(isUserAuthenticated ? [] : VIDEOS);
       }
 
       // 4. Fetch Blog Articles
@@ -359,7 +363,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         .select('*, author:profiles(*)')
         .order('published_at', { ascending: false });
 
-      if (!bErr && blogsDb && blogsDb.length > 0) {
+      if (!bErr && blogsDb) {
         const filteredDb = databaseLocaleFilter(blogsDb, currentLang);
         const formattedBlogs: BlogArticle[] = filteredDb.map((b: any) => ({
           id: b.id,
@@ -381,14 +385,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         }));
         setBlogs(formattedBlogs);
       } else {
-        setBlogs(BLOGS);
+        setBlogs(isUserAuthenticated ? [] : BLOGS);
       }
     } catch (e) {
       console.warn('Could not load data from Supabase:', e);
-      setPrompts(PROMPTS);
-      setSkills(SKILLS);
-      setVideos(VIDEOS);
-      setBlogs(BLOGS);
+      const isUserAuthenticated = !!user;
+      setPrompts(isUserAuthenticated ? [] : PROMPTS);
+      setSkills(isUserAuthenticated ? [] : SKILLS);
+      setVideos(isUserAuthenticated ? [] : VIDEOS);
+      setBlogs(isUserAuthenticated ? [] : BLOGS);
     }
   };
 
@@ -826,7 +831,55 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const switchLanguage = (newLang: LanguageCode) => {
     setCurrentLang(newLang);
     localStorage.setItem('promptat_lang', newLang);
-    const { basePath } = parseLanguagePath(window.location.pathname);
+    
+    let basePath = '/';
+    if (typeof window !== 'undefined') {
+      const parsedPath = parseLanguagePath(window.location.pathname);
+      basePath = parsedPath.basePath;
+    }
+
+    // Check if we are currently on a detail page and map translated slug
+    if (activeDetail && activeDetail.slug) {
+      const { type, slug } = activeDetail;
+      let rawItem: any = null;
+
+      if (type === 'prompt') {
+        rawItem = prompts.find(p => p.slug === slug);
+      } else if (type === 'skill') {
+        rawItem = skills.find(s => s.slug === slug);
+      } else if (type === 'video') {
+        rawItem = videos.find(v => v.slug === slug);
+      } else if (type === 'blog') {
+        rawItem = blogs.find(b => b.slug === slug);
+      }
+
+      if (rawItem) {
+        // Find translated title
+        let translatedTitle = '';
+        const id = rawItem.id;
+        const translations = LOCALIZED_CONTENT[id];
+        
+        if (translations && translations[newLang]) {
+          translatedTitle = translations[newLang]!.title;
+        } else {
+          translatedTitle = rawItem[`title_${newLang}`] || rawItem.title || '';
+        }
+
+        if (translatedTitle) {
+          const targetSlug = generateLanguageSlug(translatedTitle, newLang);
+          let pluralType = type as string;
+          if (type === 'prompt') pluralType = 'prompts';
+          else if (type === 'skill') pluralType = 'skills';
+          else if (type === 'video') pluralType = 'videos';
+
+          basePath = `/${pluralType}/${targetSlug}`;
+          
+          // Update active detail state with new slug
+          setActiveDetail({ type, slug: targetSlug });
+        }
+      }
+    }
+
     const localizedPath = buildLocalizedPath(basePath, newLang);
     window.history.pushState(null, '', localizedPath);
     
@@ -847,6 +900,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       document.title,
       'برومبتات أونلاين | Promptat Online - منصة النماذج والتعليمات الذكية'
     );
+    
+    // Refresh data dynamically to load localized columns
+    refreshData();
+    
     showNotification(`Language switched to ${config.nativeName}`, 'info');
   };
 

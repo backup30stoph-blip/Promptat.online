@@ -3,6 +3,7 @@ import { Upload, Link2, FileImage, Clipboard, CheckCircle2, AlertCircle, Refresh
 import { supabase } from '../../services/supabase/client';
 import { validateUploadFile, formatFileSize } from '../../utils/fileValidation';
 import { testStorageConnectivity, DiagnosticResult } from '../../utils/storageDiagnostics';
+import { useActiveLanguage } from '../../hooks/useActiveLanguage';
 
 export interface UploadLog {
   id: string;
@@ -31,6 +32,7 @@ export const MediaUploader: React.FC<MediaUploaderProps> = ({
   currentValue = '',
   bucketName = 'media'
 }) => {
+  const lang = useActiveLanguage();
   const [dragActive, setDragActive] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState<number | null>(null);
@@ -113,6 +115,52 @@ CREATE POLICY "Public Guest Upload Access on Storage"
     navigator.clipboard.writeText(storageSqlScript);
     setSqlCopied(true);
     setTimeout(() => setSqlCopied(false), 2500);
+  };
+
+  const handleDeleteFromBucket = async () => {
+    if (!currentValue) return;
+    const confirmMessage = lang === 'ar' 
+      ? 'هل أنت متأكد من حذف هذه الصورة نهائياً من الخادم (Storage Bucket)؟' 
+      : 'Are you sure you want to permanently delete this image from the Supabase storage bucket?';
+    if (!window.confirm(confirmMessage)) return;
+
+    try {
+      // Clean up notifications/messages
+      setErrorMessage('');
+      setSuccessMessage('');
+
+      // Extract the file path inside the bucket from the currentValue URL
+      // E.g. /storage/v1/object/public/bucketName/path/to/file.png
+      let filePath = '';
+      const parts = currentValue.split(`/storage/v1/object/public/${bucketName}/`);
+      if (parts.length > 1) {
+        filePath = decodeURIComponent(parts[1]);
+      } else {
+        // Fallback: try to extract after the last / or guess based on Unsplash
+        if (currentValue.includes('unsplash.com')) {
+          // If it is a mockup, don't try to delete from Supabase storage
+          onUploadSuccess('');
+          setSuccessMessage(lang === 'ar' ? 'تمت إزالة المعاينة بنجاح' : 'Preview removed successfully.');
+          return;
+        }
+        filePath = currentValue.substring(currentValue.lastIndexOf('/') + 1);
+      }
+
+      if (filePath) {
+        const { error } = await supabase.storage.from(bucketName).remove([filePath]);
+        if (error) {
+          console.warn('Bucket removal skipped/failed:', error.message);
+          setErrorMessage(lang === 'ar' ? `فشل الحذف من الخادم: ${error.message}` : `Storage deletion skipped/failed: ${error.message}`);
+        } else {
+          setSuccessMessage(lang === 'ar' ? 'تم حذف الملف بنجاح من الخادم' : 'Successfully deleted image file from storage bucket!');
+        }
+      }
+    } catch (err: any) {
+      console.error('Error deleting bucket file:', err);
+    }
+
+    // Always clear the parent component's state
+    onUploadSuccess('');
   };
 
   // Storage Stats State
@@ -663,10 +711,11 @@ CREATE POLICY "Public Guest Upload Access on Storage"
             </button>
             <button
               type="button"
-              onClick={() => onUploadSuccess('')}
+              onClick={handleDeleteFromBucket}
               className="text-[10px] font-bold text-red-600 hover:text-red-700 cursor-pointer underline shrink-0 px-1"
+              title={lang === 'ar' ? 'حذف من الخادم ومسح الحقل' : 'Delete from bucket and clear field'}
             >
-              Clear
+              {lang === 'ar' ? 'حذف ومسح' : 'Delete & Clear'}
             </button>
           </div>
         </div>

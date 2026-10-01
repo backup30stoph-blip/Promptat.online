@@ -1840,4 +1840,6 @@ export function validateHreflangs(pages: Array<{
 
 export { useI18n } from '../hooks/useI18n';
 export { useActiveLanguage } from '../hooks/useActiveLanguage';
+export { useCanonicalSync } from '../hooks/useCanonicalSync';
+
 
